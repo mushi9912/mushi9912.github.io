@@ -48,19 +48,21 @@
   };
 </script>
 
-  <meta name="description" content="希望总有一天可以达到">
-<meta property="og:type" content="website">
-<meta property="og:title" content="分类">
-<meta property="og:url" content="http:&#x2F;&#x2F;www.codestn.com&#x2F;categories&#x2F;index.html">
+  <meta name="description" content="一、初识Vue1、Vue介绍2、HelloVue12345678910111213141516&lt;body&gt;    &lt;div id&#x3D;&quot;test&quot;&gt;&amp;#123;&amp;#123;message&amp;#125;&amp;#125;&lt;&#x2F;div&gt;    &lt;script src&#x3D;&quot;..&#x2F;js&#x2F;vue.js&quot;&gt;&lt;&#x2F;script&gt;    &lt;script&gt;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vue笔记—--初步学习">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.codestn.com&#x2F;vue-start&#x2F;index.html">
 <meta property="og:site_name" content="codestn - 程序方块">
-<meta property="og:description" content="希望总有一天可以达到">
+<meta property="og:description" content="一、初识Vue1、Vue介绍2、HelloVue12345678910111213141516&lt;body&gt;    &lt;div id&#x3D;&quot;test&quot;&gt;&amp;#123;&amp;#123;message&amp;#125;&amp;#125;&lt;&#x2F;div&gt;    &lt;script src&#x3D;&quot;..&#x2F;js&#x2F;vue.js&quot;&gt;&lt;&#x2F;script&gt;    &lt;script&gt;">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2019-12-24T07:10:42.000Z">
-<meta property="article:modified_time" content="2019-12-24T07:42:32.850Z">
+<meta property="article:published_time" content="2020-02-01T06:37:21.000Z">
+<meta property="article:modified_time" content="2020-02-01T06:46:49.149Z">
 <meta property="article:author" content="codestn">
+<meta property="article:tag" content="SVue">
+<meta property="article:tag" content="入门">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://www.codestn.com/categories/">
+<link rel="canonical" href="http://www.codestn.com/vue-start/">
 
 
 <script id="page-configurations">
@@ -68,12 +70,11 @@
   CONFIG.page = {
     sidebar: "",
     isHome: false,
-    isPost: false
+    isPost: true
   };
 </script>
 
-  <title>分类 | codestn - 程序方块
-  </title>
+  <title>Vue笔记—--初步学习 | codestn - 程序方块</title>
   
 
 
@@ -180,52 +181,107 @@
       <div class="main-inner">
         <div class="content-wrap">
           
-  
-  
 
           <div class="content">
             
 
   <div class="posts-expand">
-    
-    
-    
-    <div class="post-block" lang="zh-CN">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.codestn.com/vue-start/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Impulse_Command_Block.gif">
+      <meta itemprop="name" content="codestn">
+      <meta itemprop="description" content="希望总有一天可以达到">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="codestn - 程序方块">
+    </span>
       <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          Vue笔记—--初步学习
+        </h2>
 
-<h2 class="post-title" itemprop="name headline">分类
-</h2>
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
 
-<div class="post-meta">
+              <time title="创建时间：2020-02-01 14:37:21 / 修改时间：14:46:49" itemprop="dateCreated datePublished" datetime="2020-02-01T14:37:21+08:00">2020-02-01</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Vue-Vuejs/" itemprop="url" rel="index">
+                    <span itemprop="name">Vue Vuejs</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="一、初识Vue"><a href="#一、初识Vue" class="headerlink" title="一、初识Vue"></a>一、初识Vue</h1><h2 id="1、Vue介绍"><a href="#1、Vue介绍" class="headerlink" title="1、Vue介绍"></a>1、Vue介绍</h2><h2 id="2、HelloVue"><a href="#2、HelloVue" class="headerlink" title="2、HelloVue"></a>2、HelloVue</h2><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"test"</span>&gt;</span>&#123;&#123;message&#125;&#125;<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"../js/vue.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line">        </span><br><span class="line"><span class="actionscript">        <span class="keyword">const</span> test =  <span class="keyword">new</span> Vue(&#123;</span></span><br><span class="line"><span class="actionscript">            el: <span class="string">'#test'</span>, <span class="comment">//用于挂载要管理的元素</span></span></span><br><span class="line">            data: &#123;</span><br><span class="line"><span class="actionscript">                message: <span class="string">"qwer"</span></span></span><br><span class="line">            &#125;</span><br><span class="line"><span class="handlebars"><span class="xml">            //<span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"test"</span>&gt;</span>交给test管理后会解析</span><span class="template-variable">&#123;&#123;message&#125;&#125;</span><span class="xml">，然后把我们定义的数据放进去</span></span></span><br><span class="line">        &#125;)</span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/SVue/" rel="tag"># SVue</a>
+              <a href="/tags/%E5%85%A5%E9%97%A8/" rel="tag"># 入门</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/spring-boot-Web/" rel="prev" title="spring-boot笔记--Web开发">
+      <i class="fa fa-chevron-left"></i> spring-boot笔记--Web开发
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/spring-boot-data/" rel="next" title="Vspring-boot笔记--数据访问">
+      Vspring-boot笔记--数据访问 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
   
 
-</div>
-
-</header>
-
-      
-      
-      
-      <div class="post-body">
-          <div class="category-all-page">
-            <div class="category-all-title">
-              目前共计 6 个分类
-            </div>
-            <div class="category-all">
-              <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Spring-Boot/">Spring Boot</a><span class="category-list-count">5</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Spring-Boot/Spring-Data/">Spring Data</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Spring-Boot/Spring-Data/MyBatis/">MyBatis</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Spring-Boot/Spring-Data/MyBatis/JDBC/">JDBC</a><span class="category-list-count">1</span></li></ul></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring-Boot/Web/">Web</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vue-Vuejs/">Vue Vuejs</a><span class="category-list-count">1</span></li></ul>
-            </div>
-          </div>
-        
-      </div>
-      
-      
-      
-    </div>
-    
-
-    
-    
-    
   </div>
 
 
@@ -277,6 +333,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、初识Vue"><span class="nav-text">一、初识Vue</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、Vue介绍"><span class="nav-text">1、Vue介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、HelloVue"><span class="nav-text">2、HelloVue</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
