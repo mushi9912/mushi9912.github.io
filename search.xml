@@ -3,7 +3,199 @@
   <entry>
     <title>spring-boot笔记--缓存</title>
     <url>/spring-Boot-cache/</url>
-    <content><![CDATA[]]></content>
+    <content><![CDATA[<h1 id="六、Spring-Boot与缓存"><a href="#六、Spring-Boot与缓存" class="headerlink" title="六、Spring Boot与缓存"></a>六、Spring Boot与缓存</h1><h2 id="1、Spring缓存抽象"><a href="#1、Spring缓存抽象" class="headerlink" title="1、Spring缓存抽象"></a>1、Spring缓存抽象</h2><p>Spring定义了org.springframework.cache.Cache和org.springframework.cache.CacheManager接口来统一不同的缓存技术，并支持使用JCache（JSR-107）注解简化我们的开发</p>
+<a id="more"></a>
+
+<h2 id="2、几个重要概念和缓存注解"><a href="#2、几个重要概念和缓存注解" class="headerlink" title="2、几个重要概念和缓存注解"></a>2、几个重要概念和缓存注解</h2><table>
+<thead>
+<tr>
+<th>组件和注解</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Cache</td>
+<td>缓存接口，定义缓存操作，实现有: RedisCache、EhCacheCache、ConcurrentMapCache 等</td>
+</tr>
+<tr>
+<td>CacheManager</td>
+<td>缓存管理器，管理各种缓存（Cache）组件</td>
+</tr>
+<tr>
+<td>@Cacheable</td>
+<td>主要对方法进行配置，能够根据方法的请求参数对其结果继续缓存</td>
+</tr>
+<tr>
+<td>@CacheEvict</td>
+<td>清空缓存</td>
+</tr>
+<tr>
+<td>@CachePut</td>
+<td>保证方法被调用、又希望结果被缓存</td>
+</tr>
+<tr>
+<td>@EnableCaching</td>
+<td>开启基于注解的缓存</td>
+</tr>
+<tr>
+<td>keyGenerator</td>
+<td>缓存数据时key生成策略</td>
+</tr>
+<tr>
+<td>serialize</td>
+<td>缓存数据时value序列化策略</td>
+</tr>
+</tbody></table>
+<h2 id="3、Spring-Boot缓存的使用"><a href="#3、Spring-Boot缓存的使用" class="headerlink" title="3、Spring Boot缓存的使用"></a>3、Spring Boot缓存的使用</h2><ol>
+<li><p>搭建基本环境、数据库表、javabean封装数据</p>
+</li>
+<li><p>整合mybatis操作数据库，关于整合mybatis可以看之前的是<a href="http://www.codestn.com/spring-boot-data/#more">Spring Boot与数据访问</a></p>
+</li>
+<li><p>开启基于注解的缓存</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@EnableCaching</span></span><br><span class="line"><span class="comment">//开启缓存</span></span><br><span class="line"><span class="meta">@MapperScan</span>(value = <span class="string">"com.cache.springboot.mapper"</span>)</span><br><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SpringbootApplication</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        SpringApplication.run(SpringbootApplication<span class="class">.<span class="keyword">class</span>, <span class="title">args</span>)</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//将方法的结果进行缓存，以后再要相同的数据，直接从缓存中获取，不会调用方法</span></span><br><span class="line"><span class="meta">@Cacheable</span>(cacheNames = <span class="string">"share"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> Share <span class="title">getShareById</span><span class="params">(Integer id)</span></span>&#123;</span><br><span class="line">    Share shareById = shareMapper.getShareById(id);</span><br><span class="line">    <span class="keyword">return</span> shareById;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们可以查看@Cacheable里的属性</p>
+<ul>
+<li><p>cacheNames/value：指定缓存组件的名字</p>
+<p>关于缓存组件的名字：CacheManager管理多个Cache组件，对缓存真正的CRUD操作在Cache组件中，每一个缓存组件有自己唯一一个名字</p>
+<p>我们可以传入数组，将数据放入多个缓存里边</p>
+</li>
+<li><p>key：缓存数据使用的key，可以用它来指定，默认是使用方法参数的值，我们可以编写SpELl指定</p>
+<p>举例：指定key为getShare[1]、getShare[2]……</p>
+<p>表达式写为key=”#root.methodName+’[‘+#id+’]’”</p>
+<table>
+<thead>
+<tr>
+<th>名字</th>
+<th>位置</th>
+<th>描述</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>methodName</td>
+<td>root object</td>
+<td>当前被调用的方法名</td>
+<td>#root.methodName</td>
+</tr>
+<tr>
+<td>method</td>
+<td>root object</td>
+<td>当前被调用的方法</td>
+<td>#root.method.name</td>
+</tr>
+<tr>
+<td>target</td>
+<td>root object</td>
+<td>当前被调用的目标对象</td>
+<td>#root.target</td>
+</tr>
+<tr>
+<td>targetClass</td>
+<td>root object</td>
+<td>当前被调用的目标对象类</td>
+<td>#root.targetClass</td>
+</tr>
+<tr>
+<td>args</td>
+<td>root object</td>
+<td>当前被调用方法的参数列表</td>
+<td>#root.args[0]</td>
+</tr>
+<tr>
+<td>caches</td>
+<td>root object</td>
+<td>当前方法调用使用的缓存列表（如@Cacheable(value{“cache1”, “cache2”})），则有两个cache</td>
+<td>#root.caches[0].name</td>
+</tr>
+<tr>
+<td>argument name</td>
+<td>evaluation context</td>
+<td>方法参数的名字，可以直接#参数名，也可以使用#p0或#a0的形式，0代表参数的索引</td>
+<td>#ban、#a[0]、#p0如果是类可以#Share.id</td>
+</tr>
+<tr>
+<td>result</td>
+<td>evaluation context</td>
+<td>方法执行后的返回值（仅当方法执行后的判断有效，如”unless”，”cache put”的表达式，”cache evict”的表达式,beforeInvocation=false），注意@Cacheable注解的方法key不能使用#result得到返回值，因为方法需要在运行前就生成一个key</td>
+<td>#result</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>keyGenerator：key的生成器，可以自己指定key的生成器的组件id，默认的key就是用一个keyGenerator生成的，key和keyGenerator二选一使用</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyCacheConfig</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span>(<span class="string">"myKeyGenerator"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> KeyGenerator <span class="title">keyGenerator</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> KeyGenerator()&#123;</span><br><span class="line"></span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> Object <span class="title">generate</span><span class="params">(Object o, Method method, Object... objects)</span> </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> method.getName()+<span class="string">"["</span>+ Arrays.asList(objects).toString()+<span class="string">"]"</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+</li>
+</ol>
+<ul>
+<li><p>cacheManager：指定缓存管理器，如redis，或者cacheResolver指定缓存解析器，二选一</p>
+</li>
+<li><p>condition：指定符合条件的情况下才缓存</p>
+<p>举例：condition=”#a0&gt;1 and ……” 第一个参数的值大于一才缓存</p>
+</li>
+<li><p>unless：否定缓存，当unless指定的条件为true，方法的返回值就不会被缓存，可以获取到结果进行判断</p>
+</li>
+<li><p>sync：是否使用异步模式</p>
+</li>
+</ul>
+<ol start="4">
+<li><p>缓存的原理</p>
+<p>自动配置类：CacheAutoConfiguration</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//在CacheAutoConfiguration里有这个类的selectImports方法可以得到所有的配置类，Spring Boot自动配置缓存的时候引入了很多的配置类</span></span><br><span class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">CacheConfigurationImportSelector</span> <span class="keyword">implements</span> <span class="title">ImportSelector</span> </span>&#123;</span><br><span class="line">    CacheConfigurationImportSelector() &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String[] selectImports(AnnotationMetadata importingClassMetadata) &#123;</span><br><span class="line">        CacheType[] types = CacheType.values();</span><br><span class="line">        String[] imports = <span class="keyword">new</span> String[types.length];</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; types.length; ++i) &#123;</span><br><span class="line">            imports[i] = CacheConfigurations.getConfigurationClass(types[i]);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> imports;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>默认生效的配置有SimpleCacheConfiguration</p>
+<p>SimpleCacheConfiguration给缓存注册了一个cacheManager</p>
+<p>ConcurrentMapCacheManager的作用</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="comment">//SimpleCacheConfiguration给缓存注册了一个cacheManager：ConcurrentMapCacheManager，可以获取和创建ConcurrentMapCacheManager类型的缓存组件，将数据存取在ConcurrentMap中</span></span><br><span class="line"><span class="function">ConcurrentMapCacheManager <span class="title">cacheManager</span><span class="params">(CacheProperties cacheProperties, CacheManagerCustomizers cacheManagerCustomizers)</span> </span>&#123;</span><br><span class="line">    ConcurrentMapCacheManager cacheManager = <span class="keyword">new</span> ConcurrentMapCacheManager();</span><br><span class="line">    List&lt;String&gt; cacheNames = cacheProperties.getCacheNames();</span><br><span class="line">    <span class="keyword">if</span> (!cacheNames.isEmpty()) &#123;</span><br><span class="line">        cacheManager.setCacheNames(cacheNames);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> (ConcurrentMapCacheManager)cacheManagerCustomizers.customize(cacheManager);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行的流程@Cacheable</p>
+<ol>
+<li><p>方法运行前，先去检查缓存Cache（缓存组件），按照cacheNames指定的名字获取（CacheManager先获取相应的缓存），第一次获取缓存如果没有会自动创建</p>
+</li>
+<li><p>去Cache中查找缓存的内容，使用一个key，默认是方法的参数，key是按照某种策略生成的，策略使用keyGenerator生成，默认使用SimpleKeyGenerator生成key</p>
+<p>SimpleKeyGenerator生成key的策略：</p>
+<p>如果没有参数key=new SimpleKey()</p>
+<p>有一个参数key=参数的值</p>
+<p>有多个参数key=new SimpleKey(params)</p>
+</li>
+<li><p>没有查到缓存就调用目标方法</p>
+</li>
+<li><p>将目标方法返回的结果放进缓存中</p>
+</li>
+</ol>
+<p>@CacheEvict</p>
+<ul>
+<li><p>key：指定要清除的缓存</p>
+</li>
+<li><p>allEntries=true：指定清除这个缓存中的所有数据</p>
+</li>
+<li><p>beforeInvocation=false：缓存的清除是否在方法之前执行</p>
+<p>默认是在方法之后执行，例如方法中出现异常就不会清除</p>
+</li>
+</ul>
+<p>@Caching</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//定义复杂的缓存规则</span></span><br><span class="line"><span class="meta">@Caching</span>(</span><br><span class="line">        cacheable = &#123;</span><br><span class="line">            <span class="meta">@Cacheable</span>(cacheNames = <span class="string">"share"</span>, key=<span class="string">"#result.id"</span>)</span><br><span class="line">        &#125;,</span><br><span class="line">        put = &#123;</span><br><span class="line">            <span class="meta">@CachePut</span>(cacheNames = <span class="string">"share"</span>, key=<span class="string">"#result.tscode"</span>)</span><br><span class="line">        &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>@CacheConfig</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//定义全局的cacheconfig</span></span><br><span class="line"><span class="meta">@CacheConfig</span>(cacheNames = <span class="string">"share"</span>)</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h2 id="4、搭建Redis环境和整合Redis"><a href="#4、搭建Redis环境和整合Redis" class="headerlink" title="4、搭建Redis环境和整合Redis"></a>4、搭建Redis环境和整合Redis</h2><p>百度Redis的安装，十分简单</p>
+<p>整合Redis</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Autowired</span></span><br><span class="line">RedisTemplate redisTemplate;  <span class="comment">//操作k-v字符串的</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@Autowired</span></span><br><span class="line">StringRedisTemplate stringRedisTemplate;  <span class="comment">//操作k-v对象的</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@Autowired</span></span><br><span class="line">RedisTemplate&lt;Object, Object&gt; myredisTemplate;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testRedis</span><span class="params">()</span></span>&#123;</span><br><span class="line">    stringRedisTemplate.opsForValue();  <span class="comment">//操作String字符串</span></span><br><span class="line">    stringRedisTemplate.opsForList();  <span class="comment">//操作list列表</span></span><br><span class="line">    stringRedisTemplate.opsForSet();  <span class="comment">//操作set集合</span></span><br><span class="line">    stringRedisTemplate.opsForHash();  <span class="comment">//操作Hash散列</span></span><br><span class="line">    stringRedisTemplate.opsForZSet();  <span class="comment">//操作ZSet有序集合</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//默认保存对象，会使用JDK的序列化机制，序列化后的数据保存在Redis中</span></span><br><span class="line">    <span class="comment">//如果我们想用json格式保存数据，可以自己配置相应的Config，如下面的MyRedisConfig类</span></span><br><span class="line">    redisTemplate.opsForValue();  <span class="comment">//与上述类似，不过可以存入对象</span></span><br><span class="line">    myredisTemplate.opsForValue().set(<span class="string">"ceshi"</span>, shareMapper.getShareById(<span class="number">1</span>));</span><br><span class="line">    System.out.println(myredisTemplate.opsForValue().get(<span class="string">"ceshi"</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>自己的RedisConfig</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyRedisConfig</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> RedisTemplate&lt;Object, Object&gt; <span class="title">myredisTemplate</span><span class="params">(RedisConnectionFactory redisConnectionFactory)</span> <span class="keyword">throws</span> UnknownHostException </span>&#123;</span><br><span class="line">        RedisTemplate&lt;Object, Object&gt; template = <span class="keyword">new</span> RedisTemplate();</span><br><span class="line">        template.setConnectionFactory(redisConnectionFactory);</span><br><span class="line">        template.setDefaultSerializer(<span class="keyword">new</span> Jackson2JsonRedisSerializer&lt;Object&gt;(Object<span class="class">.<span class="keyword">class</span>))</span>;</span><br><span class="line">        <span class="keyword">return</span> template;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注意如果在Redis命令行查询，先通过<code>keys *</code>命令查看所有key，可以看到Redis中的key为<code>&quot;\&quot;ceshi\&quot;&quot;</code>，所以直接<code>get ceshi</code>是无法查到的</p>
+]]></content>
       <categories>
         <category>Spring Boot</category>
         <category>cache</category>
