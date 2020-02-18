@@ -52,15 +52,16 @@
 
   <meta name="description" content="七、Spring Boot与消息1、概述 大多数应用中、可通过消息服务中间件来提升系统异步通信、扩展解耦能力  消息服务中两个重要概念：消息代理、目的地 当消息发送者发送消息后，将由消息代理接管，消息代理保证消息传递到指定目的地">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Spring-Boot笔记--消息">
+<meta property="og:title" content="spring-boot笔记--消息">
 <meta property="og:url" content="http:&#x2F;&#x2F;www.codestn.com&#x2F;spring-boot-rabbitmq&#x2F;index.html">
 <meta property="og:site_name" content="codestn - 程序方块">
 <meta property="og:description" content="七、Spring Boot与消息1、概述 大多数应用中、可通过消息服务中间件来提升系统异步通信、扩展解耦能力  消息服务中两个重要概念：消息代理、目的地 当消息发送者发送消息后，将由消息代理接管，消息代理保证消息传递到指定目的地">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-02-13T06:13:27.000Z">
-<meta property="article:modified_time" content="2020-02-15T12:32:50.025Z">
+<meta property="article:modified_time" content="2020-02-18T08:50:05.662Z">
 <meta property="article:author" content="codestn">
 <meta property="article:tag" content="Spring Boot">
+<meta property="article:tag" content="RabbitMQ">
 <meta property="article:tag" content="消息">
 <meta name="twitter:card" content="summary">
 
@@ -76,7 +77,7 @@
   };
 </script>
 
-  <title>Spring-Boot笔记--消息 | codestn - 程序方块</title>
+  <title>spring-boot笔记--消息 | codestn - 程序方块</title>
   
 
 
@@ -232,7 +233,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          Spring-Boot笔记--消息
+          spring-boot笔记--消息
         </h2>
 
         <div class="post-meta">
@@ -249,7 +250,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-02-15 20:32:50" itemprop="dateModified" datetime="2020-02-15T20:32:50+08:00">2020-02-15</time>
+                <time title="修改时间：2020-02-18 16:50:05" itemprop="dateModified" datetime="2020-02-18T16:50:05+08:00">2020-02-18</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -259,6 +260,12 @@
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/Spring-Boot/" itemprop="url" rel="index">
                     <span itemprop="name">Spring Boot</span>
+                  </a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Spring-Boot/RabbitMQ/" itemprop="url" rel="index">
+                    <span itemprop="name">RabbitMQ</span>
                   </a>
                 </span>
             </span>
@@ -380,6 +387,33 @@
 <td>AMQP定义了wire-level层的协议标准天然具有跨平台、跨语言特性</td>
 </tr>
 </tbody></table>
+<h2 id="2、运行RabbitMQ"><a href="#2、运行RabbitMQ" class="headerlink" title="2、运行RabbitMQ"></a>2、运行RabbitMQ</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -p 5672:5672 -p 15672:15672 --name myrabbit rabbitmq</span><br></pre></td></tr></table></figure>
+
+<h2 id="3、Spring-Boot的RabbitMQ操作"><a href="#3、Spring-Boot的RabbitMQ操作" class="headerlink" title="3、Spring Boot的RabbitMQ操作"></a>3、Spring Boot的RabbitMQ操作</h2><p><strong>RabbitMQ的自动配置</strong></p>
+<p>自动配置类<strong>RabbitAutoConfiguration.class</strong></p>
+<ul>
+<li>自动配置了连接工厂  CachingConnectionFactory.class</li>
+<li>配置属性  RabbitProperties.class</li>
+<li>RabbitTemplate.class 给RabbitMQ发送和接收消息</li>
+<li>AmqpAdmin.class RabbitMQ的启动管理组件，创建删除Queue、Exchange和Binding</li>
+<li>@EnableRabbit + @RabbitListener监听消息队列</li>
+</ul>
+<p>据RabbitProperties，我们可以设置配置属性</p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">spring.rabbitmq.host</span>=<span class="string">192.168.1.18</span></span><br><span class="line"><span class="comment">#spring.rabbitmq.username=guest</span></span><br><span class="line"><span class="comment">#spring.rabbitmq.password=guest</span></span><br><span class="line"><span class="comment">##spring.rabbitmq.virtual-host= 默认访问'/'</span></span><br></pre></td></tr></table></figure>
+
+<p>接下来我们就可以发送消息进行测试</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Autowired</span></span><br><span class="line">RabbitTemplate rabbitTemplate;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">contextLoads</span><span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 单播（点对点）</span></span><br><span class="line">    <span class="comment">// message可以自己构造，搜索Message类，定义消息体内容和消息头</span></span><br><span class="line">    <span class="comment">// rabbitTemplate.send(exchange, routeKey, message);</span></span><br><span class="line">    <span class="comment">// 常用的发送，传入一个object可以自己序列化发送给MQ</span></span><br><span class="line">    <span class="comment">// rabbitTemplate.convertAndSend(exchange, routeKey, object);</span></span><br><span class="line">    Map&lt;String, Object&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    map.put(<span class="string">"msg"</span>, <span class="string">"测试消息"</span>);</span><br><span class="line">    map.put(<span class="string">"list"</span>, Arrays.asList(<span class="string">"list消息"</span>, <span class="number">123</span>, <span class="keyword">true</span>));</span><br><span class="line">    <span class="comment">//对象被默认序列化以后发送出去</span></span><br><span class="line">    <span class="comment">// RabbitTemplate里的属性使用的是SimpleMessageConverter</span></span><br><span class="line">    <span class="comment">// private MessageConverter messageConverter = new SimpleMessageConverter();</span></span><br><span class="line">    rabbitTemplate.convertAndSend(<span class="string">"ms.direct"</span>, <span class="string">"news"</span>, map);</span><br><span class="line">    <span class="comment">//如何将数据变为json发送</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">receive</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="comment">//接收后消息队列为空</span></span><br><span class="line">    Object receive = rabbitTemplate.receiveAndConvert(<span class="string">"ms.news"</span>);</span><br><span class="line">    System.out.println(receive.getClass());</span><br><span class="line">    System.out.println(receive);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>rabbitTemplate设置</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 配置会自动生效，因为在RabbitAutoConfiguration类里有一行代码</span></span><br><span class="line"><span class="comment">// messageConverter.ifUnique(template::setMessageConverter);</span></span><br><span class="line"><span class="comment">// 其中ifUnique会将我们自己设置的配置进来</span></span><br><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> MessageConverter <span class="title">messageConverter</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Jackson2JsonMessageConverter();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="4、监听消息队列"><a href="#4、监听消息队列" class="headerlink" title="4、监听消息队列"></a>4、监听消息队列</h2><p><strong>@EnableRabbit</strong> + <strong>@RabbitListener</strong>监听消息队列</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RabbitListener</span>(queues = <span class="string">"ms.news"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">getShare</span><span class="params">(Share share)</span></span>&#123;</span><br><span class="line">    System.out.println(<span class="string">"收到消息"</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">@RabbitListener</span>(queues = <span class="string">"ms.news"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">getHeader</span><span class="params">(Message message)</span></span>&#123;</span><br><span class="line">    System.out.println(message.getBody());</span><br><span class="line">    System.out.println(message.getMessageProperties());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//开启基于注解的RabbitMQ</span></span><br><span class="line"><span class="meta">@EnableRabbit</span></span><br><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SpringbootAmqpApplication</span> </span>&#123;</span><br></pre></td></tr></table></figure>
+
+<h2 id="5、创建Exchange、Queue和Binding"><a href="#5、创建Exchange、Queue和Binding" class="headerlink" title="5、创建Exchange、Queue和Binding"></a>5、创建Exchange、Queue和Binding</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">createExchange</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="comment">// 创建Exchange和Queue</span></span><br><span class="line">    <span class="comment">// amqpAdmin.declareExchange(new DirectExchange("amqpadmin.exchange"));</span></span><br><span class="line">    <span class="comment">// amqpAdmin.declareQueue(new Queue("amqpadmin.queue", true));</span></span><br><span class="line">    <span class="comment">// 创建绑定规则</span></span><br><span class="line">    <span class="comment">// amqpAdmin.declareBinding(new Binding("amqpadmin.queue", Binding.DestinationType.QUEUE, "amqpadmin.exchange", "amqpadmin", null));</span></span><br><span class="line">    <span class="comment">// System.out.println("创建完成");</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 
     </div>
 
@@ -390,6 +424,7 @@
       <footer class="post-footer">
           <div class="post-tags">
               <a href="/tags/Spring-Boot/" rel="tag"># Spring Boot</a>
+              <a href="/tags/RabbitMQ/" rel="tag"># RabbitMQ</a>
               <a href="/tags/%E6%B6%88%E6%81%AF/" rel="tag"># 消息</a>
           </div>
 
@@ -465,7 +500,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#七、Spring-Boot与消息"><span class="nav-text">七、Spring Boot与消息</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、概述"><span class="nav-text">1、概述</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#七、Spring-Boot与消息"><span class="nav-text">七、Spring Boot与消息</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、概述"><span class="nav-text">1、概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、运行RabbitMQ"><span class="nav-text">2、运行RabbitMQ</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3、Spring-Boot的RabbitMQ操作"><span class="nav-text">3、Spring Boot的RabbitMQ操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4、监听消息队列"><span class="nav-text">4、监听消息队列</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5、创建Exchange、Queue和Binding"><span class="nav-text">5、创建Exchange、Queue和Binding</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -481,20 +516,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-count">20</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-count">12</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-count">23</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
