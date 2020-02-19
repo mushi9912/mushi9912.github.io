@@ -1,6 +1,344 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>spring-boot笔记--监管</title>
+    <url>/spring-boot-actuator/</url>
+    <content><![CDATA[<h1 id="十三、Spring-Boot与监管"><a href="#十三、Spring-Boot与监管" class="headerlink" title="十三、Spring Boot与监管"></a>十三、Spring Boot与监管</h1><h2 id="1、监控端点测试"><a href="#1、监控端点测试" class="headerlink" title="1、监控端点测试"></a>1、监控端点测试</h2><p>Spring Boot可以为我们提供准生产环境下的应用监控和管理功能。我们可以通过HTTP，JMX，SSH协议来进行操作，自动得到审计、健康及指标信息</p>
+<a id="more"></a>
+
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>描述</th>
+<th>默认是否启用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>auditevents</td>
+<td>显示当前应用程序的审计事件信息</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>beans</td>
+<td>显示应用Spring Beans的完整列表</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>caches</td>
+<td>显示可用缓存信息</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>conditions</td>
+<td>显示自动装配类的状态及及应用信息</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>configprops</td>
+<td>显示所有 @ConfigurationProperties 列表</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>env</td>
+<td>显示 ConfigurableEnvironment 中的属性</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>flyway</td>
+<td>显示 Flyway 数据库迁移信息</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>health</td>
+<td>显示应用的健康信息（未认证只显示status，认证显示全部信息详情）</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>info</td>
+<td>显示任意的应用信息</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>liquibase</td>
+<td>展示Liquibase 数据库迁移</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>metrics</td>
+<td>展示当前应用的 metrics 信息</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>mappings</td>
+<td>显示所有 @RequestMapping 路径集列表</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>scheduledtasks</td>
+<td>显示应用程序中的计划任务</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>sessions</td>
+<td>允许从Spring会话支持的会话存储中检索和删除用户会话。</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>shutdown</td>
+<td>允许应用以优雅的方式关闭（默认情况下不启用）</td>
+<td>No</td>
+</tr>
+<tr>
+<td>threaddump</td>
+<td>执行一个线程dump</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>httptrace</td>
+<td>显示HTTP跟踪信息（默认显示最后100个HTTP请求 - 响应交换）</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>heapdump</td>
+<td>返回一个GZip压缩的hprof堆dump文件</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>prometheus</td>
+<td>Prometheus服务器抓取的格式显示metrics信息</td>
+<td>Yes</td>
+</tr>
+</tbody></table>
+<p>只需要配置文件</p>
+<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 放开Actuator Web REST 端点,否则访问不到</span></span><br><span class="line"><span class="meta">management.endpoint.beans.enabled</span>=<span class="string">true</span></span><br><span class="line"><span class="meta">management.endpoints.web.base-path</span>=<span class="string">/actuator</span></span><br><span class="line"><span class="meta">management.endpoints.web.exposure.include</span>=<span class="string">*</span></span><br></pre></td></tr></table></figure>
+
+<p>访问localhost:8080/actuator/health，可以知道应用健康信息</p>
+<h3 id="2、自定义端点"><a href="#2、自定义端点" class="headerlink" title="2、自定义端点"></a>2、自定义端点</h3><p>我们可以按照两种策略来自定义：</p>
+<ul>
+<li>@Endpoint 同时支持JMX和http</li>
+<li>@JmxEndpoint 只支持JMX技术</li>
+<li>@WebEndpoint 只支持http</li>
+</ul>
+<p>通过在一个端点类上添加上面其中一个来表明该类是一个端点类。<br> 在类的方法使用@ReadOperation，@WriteOperation或@DeleteOperation，这分别会映射到Http中的 GET、POST、DELETE（对http来说）。  以下是我们自定义的一个端点：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@Endpoint</span>(id = <span class="string">"ceshi"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FeaturesEndpoint</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">private</span> Map&lt;String, Feature&gt; features = <span class="keyword">new</span> ConcurrentHashMap&lt;&gt;();</span><br><span class="line"></span><br><span class="line">   <span class="meta">@ReadOperation</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> Map&lt;String, Feature&gt; <span class="title">features</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       <span class="keyword">return</span> features;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="meta">@ReadOperation</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> Feature <span class="title">feature</span><span class="params">(@Selector String name)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">return</span> features.get(name);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="meta">@WriteOperation</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">configureFeature</span><span class="params">(@Selector String name, Feature feature)</span> </span>&#123;</span><br><span class="line">       features.put(name, feature);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="meta">@DeleteOperation</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">deleteFeature</span><span class="params">(@Selector String name)</span> </span>&#123;</span><br><span class="line">       features.remove(name);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Feature</span> </span>&#123;</span><br><span class="line">       <span class="keyword">private</span> Boolean enabled;</span><br><span class="line"></span><br><span class="line">       <span class="comment">// getters、setters方法 </span></span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>Spring Boot</category>
+        <category>Actuator</category>
+      </categories>
+      <tags>
+        <tag>Spring Boot</tag>
+        <tag>Actuator</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>spring-boot笔记--分布式</title>
+    <url>/spring-boot-distributed/</url>
+    <content><![CDATA[<h1 id="十二、Spring-Boot与分布式"><a href="#十二、Spring-Boot与分布式" class="headerlink" title="十二、Spring Boot与分布式"></a>十二、Spring Boot与分布式</h1><h2 id="1、分布式应用"><a href="#1、分布式应用" class="headerlink" title="1、分布式应用"></a>1、分布式应用</h2><p>在分布式系统中，国内常用zookeeper+dubbo组合，而Spring Boot推荐使用全栈的Spring，Spring Boot+Spring Cloud</p>
+<h2 id="2、ZooKeeper、Dubbo"><a href="#2、ZooKeeper、Dubbo" class="headerlink" title="2、ZooKeeper、Dubbo"></a>2、ZooKeeper、Dubbo</h2><p><strong>ZooKeeper</strong>是一个分布式的，开放源码的分布式应用程序协调服务。它是一个分布式应用提供一致性服务的软件，提供的功能包括：配置维护、域名服务、分布式同步、组服务等</p>
+<p><strong>Dubbo</strong>是Alibaba开源的分布式服务框架，它的最大特点是按照分层的方式来架构，使用这种方式可以是各个层之间解耦合（或者最大限度的松耦合）。从服务模型的角度来看，Dubbo采用的是一种非常简单的模型，要么是提供方提供服务，要么是消费方消费服务，所以基于这一点可以抽象出提供方（Provider）和消费服务方（Consumer）两个角色</p>
+<a id="more"></a>
+
+<h2 id="3、Docker安装ZooKeeper"><a href="#3、Docker安装ZooKeeper" class="headerlink" title="3、Docker安装ZooKeeper"></a>3、Docker安装ZooKeeper</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">安装</span><br><span class="line">docker pull zookeeper</span><br><span class="line">运行这里只指定了2181端口</span><br><span class="line">docker run --name mykeeper -p 2181:2181 --restart always -d [id]</span><br></pre></td></tr></table></figure>
+
+<h2 id="4、使用Dubbo"><a href="#4、使用Dubbo" class="headerlink" title="4、使用Dubbo"></a>4、使用Dubbo</h2><p>首先创建一个空项目，新建模块provider-ticket（服务提供者）和consumer-user（用户）</p>
+<p>这里注意依赖很重要，本人是Spring Boot2.2.4，所用依赖为</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.dubbo<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>dubbo-spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.7.3<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.zookeeper<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>zookeeper<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.5.7<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.curator<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>curator-framework<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>4.2.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.curator<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>curator-recipes<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>4.2.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><p>将服务提供者注册到注册中心</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">在service包下创建一个接口</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">TicketService</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getTicket</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">编写一个实现类</span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="comment">// 注意是Dubbo的Service</span></span><br><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TicketServiceImpl</span> <span class="keyword">implements</span> <span class="title">TicketService</span></span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getTicket</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"三体"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@EnableDubbo</span></span><br><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ProviderTicketApplication</span> </span>&#123;</span><br></pre></td></tr></table></figure>
+
+<p>配置文件</p>
+<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="meta">dubbo.application.name</span>=<span class="string">provider-ticket</span></span><br><span class="line"><span class="meta">dubbo.registry.address</span>=<span class="string">zookeeper://192.168.1.18:2181</span></span><br><span class="line"><span class="meta">dubbo.scan.base-packages</span>=<span class="string">com.ms.ticket.service</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在消费者测试</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 先把服务提供者的service包里的接口复制过来，注意包的路径要完全一样</span></span><br><span class="line"><span class="comment">// 然后在UserService下</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserService</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Reference</span></span><br><span class="line">    TicketService ticketService;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">hello</span><span class="params">()</span></span>&#123;</span><br><span class="line">        String ticket = ticketService.getTicket();</span><br><span class="line">        System.out.println(<span class="string">"买到票了"</span>+ticket);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 进行测试</span></span><br><span class="line"><span class="meta">@Autowired</span></span><br><span class="line">UserService userService;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">contextLoads</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    userService.hello();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>配置文件</p>
+<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="meta">dubbo.application.name</span>=<span class="string">consumer-user</span></span><br><span class="line"><span class="meta">dubbo.registry.address</span>=<span class="string">zookeeper://192.168.1.18:2181</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h2 id="5、Spring-Cloud-Eureka"><a href="#5、Spring-Cloud-Eureka" class="headerlink" title="5、Spring Cloud-Eureka"></a>5、Spring Cloud-Eureka</h2><p>创建空项目，在创建consumer-user，eureka-server，provider-ticket三个项目</p>
+<p><strong>eureka-server</strong>配置和使用</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">8761</span></span><br><span class="line"><span class="attr">eureka:</span></span><br><span class="line">  <span class="attr">instance:</span></span><br><span class="line">    <span class="attr">hostname:</span> <span class="string">eureka-server</span>  <span class="comment">#eureka实例的主机名</span></span><br><span class="line">  <span class="attr">client:</span></span><br><span class="line">    <span class="attr">register-with-eureka:</span> <span class="literal">false</span>  <span class="comment"># 不把本身也注册在eureka里</span></span><br><span class="line">    <span class="attr">fetch-registry:</span> <span class="literal">false</span>  <span class="comment">#不从eureka上来获取服务注册信息</span></span><br><span class="line">    <span class="attr">service-url:</span></span><br><span class="line">      <span class="attr">defaultZone:</span> <span class="string">http://localhost:8761/eureka/</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@EnableEurekaServer</span></span><br><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">EurekaServerApplication</span> </span>&#123;</span><br></pre></td></tr></table></figure>
+
+<p><strong>provider-ticket</strong>配置和使用</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">8001</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">application:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">provider-ticket</span></span><br><span class="line"><span class="attr">eureka:</span></span><br><span class="line">  <span class="attr">instance:</span></span><br><span class="line">    <span class="attr">prefer-ip-address:</span> <span class="literal">true</span>  <span class="comment">#注册服务使用服务的ip地址</span></span><br><span class="line">  <span class="attr">client:</span></span><br><span class="line">    <span class="attr">service-url:</span></span><br><span class="line">      <span class="attr">defaultZone:</span> <span class="string">http://localhost:8761/eureka/</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TicketService</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getTicket</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"地心引力"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TicketController</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    TicketService service;</span><br><span class="line">    <span class="meta">@GetMapping</span>(<span class="string">"/ticket"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getTicket</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> service.getTicket();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>consumer-user</strong>配置和使用</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">8200</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">application:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">consumer-user</span></span><br><span class="line"><span class="attr">eureka:</span></span><br><span class="line">  <span class="attr">instance:</span></span><br><span class="line">    <span class="attr">prefer-ip-address:</span> <span class="literal">true</span>  <span class="comment">#注册服务使用服务的ip地址</span></span><br><span class="line">  <span class="attr">client:</span></span><br><span class="line">    <span class="attr">service-url:</span></span><br><span class="line">      <span class="attr">defaultZone:</span> <span class="string">http://localhost:8761/eureka/</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    RestTemplate restTemplate;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@GetMapping</span>(<span class="string">"/buy"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">buyTicket</span><span class="params">(String name)</span></span>&#123;</span><br><span class="line">        <span class="comment">// 请求/ticket</span></span><br><span class="line">        String a = restTemplate.getForObject(<span class="string">"http://PROVIDER-TICKET/ticket"</span>, String<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">        <span class="keyword">return</span> name+<span class="string">"购买了"</span>+a;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 开启发现服务功能</span></span><br><span class="line"><span class="meta">@EnableDiscoveryClient</span></span><br><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConsumerUserApplication</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        SpringApplication.run(ConsumerUserApplication<span class="class">.<span class="keyword">class</span>, <span class="title">args</span>)</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 使用负载均衡机制</span></span><br><span class="line">    <span class="meta">@LoadBalanced</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> RestTemplate <span class="title">restTemplate</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> RestTemplate();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>Spring Boot</category>
+        <category>Dubbo</category>
+        <category>Eureka</category>
+        <category>ZooKeeper</category>
+      </categories>
+      <tags>
+        <tag>Spring Boot</tag>
+        <tag>ZooKeeper</tag>
+        <tag>Dubbo</tag>
+        <tag>Eureka</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>spring-boot笔记--安全</title>
+    <url>/spring-boot-security/</url>
+    <content><![CDATA[<h1 id="十一、Spring-Boot与安全"><a href="#十一、Spring-Boot与安全" class="headerlink" title="十一、Spring Boot与安全"></a>十一、Spring Boot与安全</h1><p>应用程序的两个主要区域是“认证”和“授权”（或者访问控制），这两个区域是Spring Security的两个目标</p>
+<ul>
+<li>“认证”（Authentication），是建立一个它声明的主体的过程（一个“个体”一般是指用户，设备或一些可以在你的应用程序中执行动作的其它系统）</li>
+<li>“授权”（Authorization），指确定一个主体是否允许在你的应用程序执行一个动作的过程。为了抵达需要授权的店，主体的身份已经有认证过程建立</li>
+<li>这个概念是通用的而不是只在Spring Security中</li>
+</ul>
+<a id="more"></a>
+
+<h2 id="1、登录、认证、授权"><a href="#1、登录、认证、授权" class="headerlink" title="1、登录、认证、授权"></a>1、登录、认证、授权</h2><p>首先引入Spring Security</p>
+<figure class="highlight xml"><figcaption><span>&lt;dependency&gt;</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-security<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>定制自己的配置类</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@EnableWebSecurity</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MySecurityConfig</span> <span class="keyword">extends</span> <span class="title">WebSecurityConfigurerAdapter</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">configure</span><span class="params">(HttpSecurity http)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="comment">// super.configure(http);</span></span><br><span class="line">        <span class="comment">// 定制请求的授权规则</span></span><br><span class="line">        http.authorizeRequests().antMatchers(<span class="string">"/"</span>).permitAll()</span><br><span class="line">                .antMatchers(<span class="string">"/hello/**"</span>).hasRole(<span class="string">"user"</span>)</span><br><span class="line">                .antMatchers(<span class="string">"/data/**"</span>).hasRole(<span class="string">"admin"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 开启自动配置的登录功能</span></span><br><span class="line">        <span class="comment">// /login来到登录页</span></span><br><span class="line">        <span class="comment">// 错误来到/login?error</span></span><br><span class="line">        <span class="comment">// loginPage("/userlogin")自己的登录页</span></span><br><span class="line">        <span class="comment">// 默认post请求的/login代表处理登录，一旦自己定制登录页，loginPage的post请求就是登录</span></span><br><span class="line">        <span class="comment">// usernameParameter,passwordParameter设置登录表单的name</span></span><br><span class="line">        http.formLogin()</span><br><span class="line">            .usernameParameter(<span class="string">"user"</span>).passwordParameter(<span class="string">"pwd"</span>)</span><br><span class="line">            .loginPage(<span class="string">"/userlogin"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 开启自动配置的注销功能</span></span><br><span class="line">        <span class="comment">// 访问logout表示用户注销，清空session</span></span><br><span class="line">        <span class="comment">// 注销成功返回到登录页面</span></span><br><span class="line">        <span class="comment">// logoutSuccessUrl("/")注销成功来到首页</span></span><br><span class="line">        http.logout().logoutSuccessUrl(<span class="string">"/"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 开启记住我功能</span></span><br><span class="line">        <span class="comment">// 登录成功后，将cookie发给浏览器保存，以后访问页面会带上这个cookie</span></span><br><span class="line">        <span class="comment">// 点击注销会删除cookie</span></span><br><span class="line">        <span class="comment">// rememberMeParameter设置checkbox的name</span></span><br><span class="line">        http.rememberMe().rememberMeParameter(<span class="string">"remember"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">configure</span><span class="params">(AuthenticationManagerBuilder auth)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="comment">// super.configure(auth);</span></span><br><span class="line">        <span class="comment">// 定制认证规则</span></span><br><span class="line">        auth.inMemoryAuthentication()</span><br><span class="line">                .withUser(<span class="string">"zhangsan"</span>).password(<span class="string">"123456"</span>).roles(<span class="string">"user"</span>)</span><br><span class="line">                .and()</span><br><span class="line">                .withUser(<span class="string">"lisi"</span>).password(<span class="string">"qwer"</span>).roles(<span class="string">"data"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>Spring Boot</category>
+        <category>Spring Security</category>
+      </categories>
+      <tags>
+        <tag>Spring Boot</tag>
+        <tag>Spring Security</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>spring-boot笔记--任务</title>
+    <url>/spring-boot-task/</url>
+    <content><![CDATA[<h1 id="十、Spring-Boot与任务"><a href="#十、Spring-Boot与任务" class="headerlink" title="十、Spring Boot与任务"></a>十、Spring Boot与任务</h1><h2 id="1、异步任务"><a href="#1、异步任务" class="headerlink" title="1、异步任务"></a>1、异步任务</h2><ul>
+<li><strong>同步方法</strong>调用一旦开始，调用者必须等到方法调用返回后，才能继续后续的行为。</li>
+<li><strong>异步方法</strong>调用一旦开始，方法调用就会立即返回，调用者就可以继续后续的操作。而，异步方法通常会在另外一个线程中，“真实”地执行着。整个过程，不会阻碍调用者的工作</li>
+</ul>
+<a id="more"></a>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 告诉Spring Boot这是一个异步的方法</span></span><br><span class="line"><span class="meta">@Async</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">hello</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        Thread.sleep(<span class="number">3000</span>);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">    System.out.println(<span class="string">"正在处理......"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Autowired</span></span><br><span class="line">AsyncService asyncService;</span><br><span class="line"></span><br><span class="line"><span class="meta">@GetMapping</span>(<span class="string">"/hello"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">hello</span><span class="params">()</span></span>&#123;</span><br><span class="line">    asyncService.hello();</span><br><span class="line">    <span class="keyword">return</span> <span class="string">"success"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 开启异步注解</span></span><br><span class="line"><span class="meta">@EnableAsync</span></span><br><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SpringbootTaskApplication</span> </span>&#123;</span><br></pre></td></tr></table></figure>
+
+<h2 id="2、定时任务"><a href="#2、定时任务" class="headerlink" title="2、定时任务"></a>2、定时任务</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// second(秒)、minute(分)、hour(时)、day of month(日)、month(月)、day of week(周几)</span></span><br><span class="line"><span class="comment">// 0 * * * * MON-FRI  周一到周五每一分钟0时都启动</span></span><br><span class="line"><span class="comment">// @Scheduled(cron = "0 * * * * WED")</span></span><br><span class="line"><span class="comment">// @Scheduled(cron = "0,1,2,3,4 * * * * WED")</span></span><br><span class="line"><span class="comment">// @Scheduled(cron = "0-4 * * * * WED")</span></span><br><span class="line"><span class="comment">// @Scheduled(cron = "0/4 * * * * WED")  每四秒执行一次</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">hello</span><span class="params">()</span></span>&#123;</span><br><span class="line">    System.out.println(<span class="string">"Hello"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 开启定时注解</span></span><br><span class="line"><span class="meta">@EnableScheduling</span></span><br><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SpringbootTaskApplication</span> </span>&#123;</span><br></pre></td></tr></table></figure>
+
+<p><strong>cron表达式</strong></p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>允许值</th>
+<th>允许的特殊字符</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>秒</td>
+<td>0-59</td>
+<td>, - * /</td>
+</tr>
+<tr>
+<td>分</td>
+<td>0-59</td>
+<td>, - * /</td>
+</tr>
+<tr>
+<td>小时</td>
+<td>0-23</td>
+<td>, - * /</td>
+</tr>
+<tr>
+<td>日期</td>
+<td>1-31</td>
+<td>, - * ? / L W C</td>
+</tr>
+<tr>
+<td>月份</td>
+<td>1-12</td>
+<td>, - * /</td>
+</tr>
+<tr>
+<td>星期</td>
+<td>0-7或SUN-SAT 0,7是SUN</td>
+<td>, - * ? / L C #</td>
+</tr>
+</tbody></table>
+<p><strong>特殊字符的含义</strong></p>
+<table>
+<thead>
+<tr>
+<th>特殊字符</th>
+<th>代表含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>,</td>
+<td>枚举</td>
+</tr>
+<tr>
+<td>-</td>
+<td>区间</td>
+</tr>
+<tr>
+<td>*</td>
+<td>任意</td>
+</tr>
+<tr>
+<td>/</td>
+<td>步长</td>
+</tr>
+<tr>
+<td>?</td>
+<td>日/星期冲突匹配</td>
+</tr>
+<tr>
+<td>L</td>
+<td>最后</td>
+</tr>
+<tr>
+<td>W</td>
+<td>工作日</td>
+</tr>
+<tr>
+<td>C</td>
+<td>和calendar联系后计算过的值</td>
+</tr>
+<tr>
+<td>#</td>
+<td>星期，4#2，第2个星期四</td>
+</tr>
+</tbody></table>
+<h2 id="3、邮件任务"><a href="#3、邮件任务" class="headerlink" title="3、邮件任务"></a>3、邮件任务</h2><p>首先设置一个邮箱，开启stmp和pop3服务，生成授权码，为了安全起见，我们不会使用密码，而是使用授权码发送邮件</p>
+<p>导入依赖</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-mail<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>Spring Boot配置</p>
+<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="meta">spring.mail.username</span>=<span class="string">xxxxxxxxxxx@163.com</span></span><br><span class="line"><span class="meta">spring.mail.password</span>=<span class="string">xxxxxxxx</span></span><br><span class="line"><span class="meta">spring.mail.host</span>=<span class="string">smtp.163.com</span></span><br></pre></td></tr></table></figure>
+
+<p>发送简单邮件</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">contextLoads</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    SimpleMailMessage mailMessage = <span class="keyword">new</span> SimpleMailMessage();</span><br><span class="line">    mailMessage.setSubject(<span class="string">"springboot邮件任务"</span>);</span><br><span class="line">    mailMessage.setText(<span class="string">"20200219邮件测试"</span>);</span><br><span class="line">    mailMessage.setTo(<span class="string">"xxxxxxxxxx@qq.com"</span>);</span><br><span class="line">    mailMessage.setFrom(<span class="string">"xxxxxxxxxxx@163.com"</span>);</span><br><span class="line">    javaMailSender.send(mailMessage);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>发送复杂邮件</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">test2</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="comment">// 创建一个复杂的消息邮件</span></span><br><span class="line">    MimeMessage mimeMessage = javaMailSender.createMimeMessage();</span><br><span class="line">    MimeMessageHelper mimeMessageHelper = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        mimeMessageHelper = <span class="keyword">new</span> MimeMessageHelper(mimeMessage, <span class="keyword">true</span>);</span><br><span class="line">        mimeMessageHelper.setSubject(<span class="string">"springboot邮件任务"</span>);</span><br><span class="line">        mimeMessageHelper.setText(<span class="string">"&lt;b style='color: red'&gt;20200219复杂邮件测试&lt;/b&gt;"</span>, <span class="keyword">true</span>);</span><br><span class="line">        mimeMessageHelper.setTo(<span class="string">"xxxxxxxxxx@qq.com"</span>);</span><br><span class="line">        mimeMessageHelper.setFrom(<span class="string">"xxxxxxxxxxx@163.com"</span>);</span><br><span class="line">        mimeMessageHelper.addAttachment(<span class="string">"测试文件.jpg"</span>, <span class="keyword">new</span> File(<span class="string">"测试文件.jpg"</span>));</span><br><span class="line">        javaMailSender.send(mimeMessage);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (MessagingException e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>Spring Boot</category>
+        <category>Async</category>
+      </categories>
+      <tags>
+        <tag>Spring Boot</tag>
+        <tag>Async</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>spring-boot笔记--检索</title>
     <url>/spring-boot-search/</url>
     <content><![CDATA[<h1 id="九、Spring-Boot与检索"><a href="#九、Spring-Boot与检索" class="headerlink" title="九、Spring Boot与检索"></a>九、Spring Boot与检索</h1><h2 id="1、docker下载使用Elasticsearch"><a href="#1、docker下载使用Elasticsearch" class="headerlink" title="1、docker下载使用Elasticsearch"></a>1、docker下载使用Elasticsearch</h2><p>下载Elasticsearch</p>
