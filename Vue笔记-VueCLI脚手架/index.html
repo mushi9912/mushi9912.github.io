@@ -50,15 +50,15 @@
   };
 </script>
 
-  <meta name="description" content="九、脚手架的使用1.VueCLI2的使用文件解释 build文件夹和config都是配置相关 .babelrc就是将ES6转为ES5，适配更多浏览器的配置文件 .editorconfig对文本进行统一 .eslintignore对配置的文件进行格式忽略">
+  <meta name="description" content="九、脚手架的使用1.VueCLI2的使用VueCLI2的文件解释 build文件夹和config都是配置相关 .babelrc就是将ES6转为ES5，适配更多浏览器的配置文件 .editorconfig对文本进行统一 .eslintignore对配置的文件进行格式忽略">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Vue笔记--VueCLI脚手架">
 <meta property="og:url" content="http:&#x2F;&#x2F;www.codestn.com&#x2F;Vue%E7%AC%94%E8%AE%B0-VueCLI%E8%84%9A%E6%89%8B%E6%9E%B6&#x2F;index.html">
 <meta property="og:site_name" content="codestn - 程序方块">
-<meta property="og:description" content="九、脚手架的使用1.VueCLI2的使用文件解释 build文件夹和config都是配置相关 .babelrc就是将ES6转为ES5，适配更多浏览器的配置文件 .editorconfig对文本进行统一 .eslintignore对配置的文件进行格式忽略">
+<meta property="og:description" content="九、脚手架的使用1.VueCLI2的使用VueCLI2的文件解释 build文件夹和config都是配置相关 .babelrc就是将ES6转为ES5，适配更多浏览器的配置文件 .editorconfig对文本进行统一 .eslintignore对配置的文件进行格式忽略">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-02-17T08:55:57.000Z">
-<meta property="article:modified_time" content="2020-02-17T10:02:16.572Z">
+<meta property="article:modified_time" content="2020-02-20T14:39:49.132Z">
 <meta property="article:author" content="codestn">
 <meta property="article:tag" content="Vue">
 <meta property="article:tag" content="VueCLI">
@@ -241,10 +241,16 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2020-02-17 16:55:57 / 修改时间：18:02:16" itemprop="dateCreated datePublished" datetime="2020-02-17T16:55:57+08:00">2020-02-17</time>
+              <time title="创建时间：2020-02-17 16:55:57" itemprop="dateCreated datePublished" datetime="2020-02-17T16:55:57+08:00">2020-02-17</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-02-20 22:39:49" itemprop="dateModified" datetime="2020-02-20T22:39:49+08:00">2020-02-20</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
@@ -288,7 +294,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="九、脚手架的使用"><a href="#九、脚手架的使用" class="headerlink" title="九、脚手架的使用"></a>九、脚手架的使用</h1><h2 id="1-VueCLI2的使用"><a href="#1-VueCLI2的使用" class="headerlink" title="1.VueCLI2的使用"></a>1.VueCLI2的使用</h2><p>文件解释</p>
+        <h1 id="九、脚手架的使用"><a href="#九、脚手架的使用" class="headerlink" title="九、脚手架的使用"></a>九、脚手架的使用</h1><h2 id="1-VueCLI2的使用"><a href="#1-VueCLI2的使用" class="headerlink" title="1.VueCLI2的使用"></a>1.VueCLI2的使用</h2><p><strong>VueCLI2的文件解释</strong></p>
 <p>build文件夹和config都是配置相关</p>
 <p>.babelrc就是将ES6转为ES5，适配更多浏览器的配置文件</p>
 <p>.editorconfig对文本进行统一</p>
@@ -300,6 +306,45 @@
 <p>.postcssrc对css转化的配置</p>
 <p>package.json管理node包，指定一个大概的版本</p>
 <p>package-lock.json真实的版本</p>
+<p>eslint虽然可以规范代码，但是有些规范和我们的习惯有些不同，如果想关掉它，可以在config里将useESlint改为false</p>
+<p>Vue程序运行过程</p>
+<p>先将template转换为抽象语法树（abstract syntax tree）缩写为ast，然后编译为一个render函数，再将render函数转换为一个虚拟dom，最后转换为一个真实dom</p>
+<p><strong>runtime-compiler</strong></p>
+<p>template -&gt; ast -&gt; render -&gt; vdom -&gt; UI</p>
+<p><strong>runtime-only</strong></p>
+<p>render -&gt; vdom -&gt; UI</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// App.vue本身就是组件</span></span><br><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  el: <span class="string">"#app"</span>,</span><br><span class="line">  template: <span class="string">"&lt;App/&gt;"</span>,</span><br><span class="line">  components: &#123;</span><br><span class="line">    App</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  el: <span class="string">"#app"</span>,</span><br><span class="line">  render: <span class="function"><span class="params">h</span> =&gt;</span> h(App)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 第一种类型也可以写为</span></span><br><span class="line"><span class="comment">// createElement实际上就是h这个函数</span></span><br><span class="line"><span class="comment">// createElement("标签", &#123;标签的属性&#125;, [数组的内容])</span></span><br><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  el: <span class="string">"#app"</span>, </span><br><span class="line">  render: <span class="function"><span class="keyword">function</span> (<span class="params">createElement</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 普通用法</span></span><br><span class="line">    <span class="comment">// render会把#app的内容替换为h2标签</span></span><br><span class="line">    <span class="keyword">return</span> createElement(<span class="string">"h2"</span>, </span><br><span class="line">      &#123;<span class="attr">class</span>: <span class="string">"box"</span>&#125;, </span><br><span class="line">      [<span class="string">"Hello World"</span>])</span><br><span class="line">    <span class="comment">// 这样h2里会有一个按钮</span></span><br><span class="line">    <span class="keyword">return</span> createElement(<span class="string">"h2"</span>, </span><br><span class="line">      &#123;<span class="attr">class</span>: <span class="string">"box"</span>&#125;, </span><br><span class="line">      [<span class="string">"Hello World"</span>, createElement(<span class="string">"button"</span>, [<span class="string">"按钮"</span>])])</span><br><span class="line">    <span class="comment">//也可以传入一个组件，例如下面这个cpn组件</span></span><br><span class="line">    <span class="keyword">return</span> createElement(cpn)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> cpn = &#123;</span><br><span class="line">  template: <span class="string">"&lt;div&gt;&#123;&#123;message&#125;&#125;&lt;/div&gt;"</span>,</span><br><span class="line">  data() &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      </span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果在之后的开发中，你仍然用template，就需要选择Runtime-Compiler</p>
+<p>如果在之后的开发中，使用的是.vue文件开发，那么可以选择Runtime-only</p>
+<h2 id="2、VueCLI3的使用"><a href="#2、VueCLI3的使用" class="headerlink" title="2、VueCLI3的使用"></a>2、VueCLI3的使用</h2><ol>
+<li>Please pick  a preset: (Use arrow keys)<ul>
+<li>default (babel, eslint)</li>
+<li>Manually select features (选项按空格选中和取消)</li>
+</ul>
+</li>
+<li>Check the features needed for you project<ul>
+<li>Babel</li>
+<li>TypeScript</li>
+<li>Progresssive Web App (PWA) Support</li>
+<li>Router (路由)</li>
+<li>Vuex</li>
+<li>CSS Pre-processors (CSS 预处理器)</li>
+<li>Linter / Formatter (ESLint)</li>
+<li>Unit Testing (单元测试)</li>
+<li>E2E Testing (端到端测试)</li>
+</ul>
+</li>
+<li>Where do you prefer placing config for Babel, ESLint, etc.?<ul>
+<li>In dedicated config files (单独的配置文件)</li>
+<li>In package.json (写到package.json里)</li>
+</ul>
+</li>
+<li>Save this as a preset for future project ? (保存一个自己的配置)</li>
+<li>Save preset as: (保存配置的名字)</li>
+</ol>
+<h2 id="3、VueCLI3配置"><a href="#3、VueCLI3配置" class="headerlink" title="3、VueCLI3配置"></a>3、VueCLI3配置</h2><p>可以使用vue ui来设置</p>
+<p>也可以创建一个vue.config.js</p>
 
     </div>
 
@@ -385,7 +430,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#九、脚手架的使用"><span class="nav-text">九、脚手架的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-VueCLI2的使用"><span class="nav-text">1.VueCLI2的使用</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#九、脚手架的使用"><span class="nav-text">九、脚手架的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-VueCLI2的使用"><span class="nav-text">1.VueCLI2的使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、VueCLI3的使用"><span class="nav-text">2、VueCLI3的使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3、VueCLI3配置"><span class="nav-text">3、VueCLI3配置</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -401,7 +446,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-count">27</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -414,7 +459,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-count">30</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
