@@ -1,6 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>MySQL索引背后的原理和使用</title>
+    <url>/mysql-index/</url>
+    <content><![CDATA[<h1 id="数据库索引的原理以及使用"><a href="#数据库索引的原理以及使用" class="headerlink" title="数据库索引的原理以及使用"></a>数据库索引的原理以及使用</h1><p>在毕业设计的开发中，对于数据库的索引方面明白了它的巨大作用，对于以前没有及时了解和学习感到非常遗憾，本人是通过网络上的一篇文章了解的，并在这里附上链接，链接的文章也是转载的，希望可以关注原作者并对转载的人表示感谢。<a href="https://www.cnblogs.com/tgycoder/p/5410057.html" target="_blank" rel="noopener">MySQL索引背后的数据结构及算法原理</a></p>
+<p><strong>以下是我通过阅读文章所做的笔记，阅读者可以自行查看也可以直接查看原文章。</strong></p>
+<p>文章主要内容分为三个部分。</p>
+<p>第一部分主要从数据结构及算法理论层面讨论MySQL数据库索引的数理基础。</p>
+<p>第二部分结合MySQL数据库中MyISAM和InnoDB数据存储引擎中索引的架构实现讨论聚集索引、非聚集索引及覆盖索引等话题。</p>
+<p>第三部分根据上面的理论基础，讨论MySQL中高性能使用索引的策略。</p>
+<a id="more"></a>
+
+<h2 id="数据结构及算法基础"><a href="#数据结构及算法基础" class="headerlink" title="数据结构及算法基础"></a>数据结构及算法基础</h2><h3 id="索引的本质"><a href="#索引的本质" class="headerlink" title="索引的本质"></a>索引的本质</h3><p>MySQL官方对索引的定义为：索引（Index）是帮助MySQL高效获取数据的数据结构。提取句子主干，就可以得到索引的本质：索引是一种数据结构。</p>
+<p>数据库查询是数据库的主要功能之一，最基本的查询算法是顺序查找（linear  search）时间复杂度为O(n)，显然在数据量很大时效率很低。优化的查找算法如二分查找（binary search）、二叉树查找（binary tree  search）等，虽然查找效率提高了。但是各自对检索的数据都有要求：二分查找要求被检索数据有序，而二叉树查找只能应用于二叉查找树上，但是数据本身的组织结构不可能完全满足各种数据结构（例如，理论上不可能同时将两列都按顺序进行组织）。所以，在数据之外，数据库系统还维护着满足特定查找算法的数据结构。这些数据结构以某种方式引用（指向）数据，这样就可以在这些数据结构上实现高级查找算法。这种数据结构就是索引。</p>
+<h3 id="B-Tree和B-Tree"><a href="#B-Tree和B-Tree" class="headerlink" title="B-Tree和B+Tree"></a>B-Tree和B+Tree</h3><p>关于B树和B+树请参考<a href="http://www.cnblogs.com/tgycoder/p/5077017.html" target="_blank" rel="noopener">关于B树的一些总结</a>，这篇文章介绍的比较详细，同时容易理解。</p>
+<p>目前大部分数据库系统及文件系统都采用B-Tree或其变种B+Tree作为索引结构，在本文的下一节会结合存储器原理及计算机存取原理讨论为什么B-Tree和B+Tree在被如此广泛用于索引，这一节先单纯从数据结构角度描述它们。</p>
+<h4 id="B-Tree"><a href="#B-Tree" class="headerlink" title="B-Tree"></a>B-Tree</h4><p>为了描述B-Tree，首先定义一条数据记录为一个二元组[key, data]，key为记录的键值，对于不同数据记录，key是互不相同的；data为数据记录除key外的数据。那么B-Tree是满足下列条件的数据结构：</p>
+<ol>
+<li>d&gt;=2，即B-Tree的度；</li>
+<li>h为B-Tree的高；</li>
+<li>每个非叶子结点由n-1个key和n个指针组成，其中d&lt;=n&lt;=2d；</li>
+<li>每个叶子结点至少包含一个key和两个指针，最多包含2d-1个key和2d个指针，叶结点的指针均为NULL；</li>
+<li>所有叶结点都在同一层，深度等于树高h；</li>
+<li>key和指针相互间隔，结点两端是指针；</li>
+<li>一个结点中的key从左至右非递减排列；</li>
+<li>如果某个指针在结点node最左边且不为null，则其指向结点的所有key小于v(key1)，其中v(key1)为node的第一个key的值。</li>
+<li>如果某个指针在结点node最右边且不为null，则其指向结点的所有key大于v(keym)，其中v(keym)为node的最后一个key的值。</li>
+<li>如果某个指针在结点node的左右相邻key分别是keyi和keyi+1且不为null，则其指向结点的所有key小于v(keyi+1)且大于v(keyi)。</li>
+</ol>
+<h4 id="B-Tree-1"><a href="#B-Tree-1" class="headerlink" title="B+Tree"></a>B+Tree</h4><p>B-Tree有许多变种，其中最常见的是B+Tree，例如MySQL就普遍使用B+Tree实现其索引结构。</p>
+<p>与B-Tree相比，B+Tree有以下不同点：</p>
+<ol>
+<li>每个结点的指针上限为2d而不是2d+1。</li>
+<li>内结点不存储data，只存储key；叶子结点不存储指针。</li>
+</ol>
+<h4 id="带有顺序访问指针的B-Tree"><a href="#带有顺序访问指针的B-Tree" class="headerlink" title="带有顺序访问指针的B+Tree"></a>带有顺序访问指针的B+Tree</h4><p>一般在数据库系统或文件系统中使用的B+Tree结构都在经典B+Tree的基础上进行了优化，增加了顺序访问指针。</p>
+<h3 id="为什么使用B-Tree（B-Tree）"><a href="#为什么使用B-Tree（B-Tree）" class="headerlink" title="为什么使用B-Tree（B+Tree）"></a>为什么使用B-Tree（B+Tree）</h3><p>上文说过，红黑树等数据结构也可以用来实现索引，但是文件系统及数据库系统普遍采用B-/+Tree作为索引结构，这一节将结合计算机组成原理相关知识讨论B-/+Tree作为索引的理论基础。</p>
+<p>一般来说，索引本身也很大，不可能全部存储在内存中，因此索引往往以索引文件的形式存储的磁盘上。这样的话，索引查找过程中就要产生磁盘I/O消耗，相对于内存存取，I/O存取的消耗要高几个数量级，所以评价一个数据结构作为索引的优劣最重要的指标就是在查找过程中磁盘I/O操作次数的渐进复杂度。换句话说，索引的结构组织要尽量减少查找过程中磁盘I/O的存取次数。</p>
+<h2 id="MySQL索引实现"><a href="#MySQL索引实现" class="headerlink" title="MySQL索引实现"></a>MySQL索引实现</h2><p>在MySQL中，索引属于存储引擎级别的概念，不同存储引擎对索引的实现方式是不同的，本文主要讨论MyISAM和InnoDB两个存储引擎(<a href="http://www.cnblogs.com/tgycoder/p/5410096.html" target="_blank" rel="noopener">MySQL数据库MyISAM和InnoDB存储引擎的比较</a>)的索引实现方式。</p>
+<h3 id="MyISAM索引实现"><a href="#MyISAM索引实现" class="headerlink" title="MyISAM索引实现"></a>MyISAM索引实现</h3><p>MyISAM引擎使用B+Tree作为索引结构，叶结点的data域存放的是数据记录的地址。MyISAM中索引检索的算法为首先按照B+Tree搜索算法搜索索引，如果指定的Key存在，则取出其data域的值，然后以data域的值为地址，读取相应数据记录。</p>
+<p>MyISAM的索引方式也叫做“非聚集”的，之所以这么称呼是为了与InnoDB的聚集索引区分。</p>
+<h3 id="InnoDB索引实现"><a href="#InnoDB索引实现" class="headerlink" title="InnoDB索引实现"></a>InnoDB索引实现</h3><p>虽然InnoDB也使用B+Tree作为索引结构，但具体实现方式却与MyISAM截然不同。</p>
+<p>第一个重大区别是InnoDB的数据文件本身就是索引文件。从上文知道，MyISAM索引文件和数据文件是分离的，索引文件仅保存数据记录的地址。而在InnoDB中，表数据文件本身就是按B+Tree组织的一个索引结构，这棵树的叶结点data域保存了完整的数据记录。这个索引的key是数据表的主键，因此InnoDB表数据文件本身就是主索引。</p>
+<p>因为InnoDB的数据文件本身要按主键聚集，所以InnoDB要求表必须有主键（MyISAM可以没有），如果没有显式指定，则MySQL系统会自动选择一个可以唯一标识数据记录的列作为主键，如果不存在这种列，则MySQL自动为InnoDB表生成一个隐含字段作为主键，这个字段长度为6个字节，类型为长整形。</p>
+<p>第二个与MyISAM索引的不同是InnoDB的辅助索引data域存储相应记录主键的值而不是地址。换句话说，InnoDB的所有辅助索引都引用主键作为data域。</p>
+<p>了解不同存储引擎的索引实现方式对于正确使用和优化索引都非常有帮助，例如知道了InnoDB的索引实现后，就很容易明白为什么不建议使用过长的字段作为主键，因为所有辅助索引都引用主索引，过长的主索引会令辅助索引变得过大。再例如，用非单调的字段作为主键在InnoDB中不是个好主意，因为InnoDB数据文件本身是一颗B+Tree，非单调的主键会造成在插入新记录时数据文件为了维持B+Tree的特性而频繁的分裂调整，十分低效，而使用自增字段作为主键则是一个很好的选择。</p>
+<h2 id="InnoDB的主键选择与优化"><a href="#InnoDB的主键选择与优化" class="headerlink" title="InnoDB的主键选择与优化"></a>InnoDB的主键选择与优化</h2><p>在使用InnoDB存储引擎时，如果没有特别的需要，请永远使用一个与业务无关的自增字段作为主键。</p>
+<p>经常看到有帖子或博客讨论主键选择问题，有人建议使用业务无关的自增主键，有人觉得没有必要，完全可以使用如学号或身份证号这种唯一字段作为主键。不论支持哪种论点，大多数论据都是业务层面的。如果从数据库索引优化角度看，使用InnoDB引擎而不使用自增主键绝对是一个糟糕的主意。</p>
+<p>上文讨论过InnoDB的索引实现，InnoDB使用聚集索引，数据记录本身被存于主索引（一颗B+Tree）的叶子节点上。这就要求同一个叶子节点内（大小为一个内存页或磁盘页）的各条数据记录按主键顺序存放，因此每当有一条新的记录插入时，MySQL会根据其主键将其插入适当的节点和位置，如果页面达到装载因子（InnoDB默认为15/16），则开辟一个新的页（节点）。</p>
+<p>如果表使用自增主键，那么每次插入新的记录，记录就会顺序添加到当前索引节点的后续位置，当一页写满，就会自动开辟一个新的页。</p>
+<p>这样就会形成一个紧凑的索引结构，近似顺序填满。由于每次插入时也不需要移动已有数据，因此效率很高，也不会增加很多开销在维护索引上。</p>
+<p>如果使用非自增主键（如果身份证号或学号等），由于每次插入主键的值近似于随机，因此每次新纪录都要被插到现有索引页得中间某个位置，此时MySQL不得不为了将新记录插到合适位置而移动数据，甚至目标页面可能已经被回写到磁盘上而从缓存中清掉，此时又要从磁盘上读回来，这增加了很多开销，同时频繁的移动、分页操作造成了大量的碎片，得到了不够紧凑的索引结构，后续不得不通过OPTIMIZE TABLE来重建表并优化填充页面。</p>
+<p>因此，只要可以，请尽量在InnoDB上采用自增字段做主键。</p>
+]]></content>
+      <categories>
+        <category>MySQL</category>
+      </categories>
+      <tags>
+        <tag>MySQL</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>mybatis与mysql的Json格式映射-使用JSONObject</title>
     <url>/mybatis-json/</url>
     <content><![CDATA[<h1 id="mybatis与mysql的Json格式映射-使用JSONObject"><a href="#mybatis与mysql的Json格式映射-使用JSONObject" class="headerlink" title="mybatis与mysql的Json格式映射-使用JSONObject"></a>mybatis与mysql的Json格式映射-使用JSONObject</h1><p>JavaBean类</p>
@@ -21,8 +81,8 @@
         <category>MySQL</category>
       </categories>
       <tags>
-        <tag>MyBatis</tag>
         <tag>MySQL</tag>
+        <tag>MyBatis</tag>
       </tags>
   </entry>
   <entry>
@@ -2233,8 +2293,8 @@
         <category>JDBC</category>
       </categories>
       <tags>
-        <tag>MyBatis</tag>
         <tag>MySQL</tag>
+        <tag>MyBatis</tag>
         <tag>Spring Boot</tag>
         <tag>JDBC</tag>
         <tag>Druid</tag>
