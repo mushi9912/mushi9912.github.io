@@ -221,6 +221,120 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.codestn.com/java-concurrency-thread/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Impulse_Command_Block.gif">
+      <meta itemprop="name" content="codestn">
+      <meta itemprop="description" content="希望总有一天可以达到">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="codestn - 程序方块">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/java-concurrency-thread/" class="post-title-link" itemprop="url">Java并发01：实现方法剖析</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-09-20 20:30:33 / 修改时间：20:45:54" itemprop="dateCreated datePublished" datetime="2020-09-20T20:30:33+08:00">2020-09-20</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/%E5%B9%B6%E5%8F%91/" itemprop="url" rel="index">
+                    <span itemprop="name">并发</span>
+                  </a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/%E5%B9%B6%E5%8F%91/Thread/" itemprop="url" rel="index">
+                    <span itemprop="name">Thread</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/java-concurrency-thread/" class="post-meta-item leancloud_visitors" data-flag-title="Java并发01：实现方法剖析" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/java-concurrency-thread/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/java-concurrency-thread/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="第01章：为何说只有-1-种实现线程的方法？"><a href="#第01章：为何说只有-1-种实现线程的方法？" class="headerlink" title="第01章：为何说只有 1 种实现线程的方法？"></a>第01章：为何说只有 1 种实现线程的方法？</h2><p><strong>记录自拉钩专栏课程</strong></p>
+<p>实现线程是并发编程中基础中的基础，因为我们必须要先实现多线程，才可以继续后续的一系列操作。所以本课时就先从并发编程的基础如何实现线程开始讲起，希望你能够夯实基础，虽然实现线程看似简单、基础，但实际上却暗藏玄机。首先，我们来看下为什么说本质上实现线程只有一种方式？</p>
+<p>实现线程的方式到底有几种？大部分人会说有 2 种、3 种或是 4 种，很少有人会说有 1 种。我们接下来看看它们具体指什么？2 种实现方式的描述是最基本的，也是最为大家熟知的，我们就先来看看 2 种线程实现方式的源码。</p>
+<h3 id="实现-Runnable-接口"><a href="#实现-Runnable-接口" class="headerlink" title="实现 Runnable 接口"></a>实现 Runnable 接口</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RunnableThread</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">'用实现Runnable接口实现线程'</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>第 1 种方式是通过实现 Runnable 接口实现多线程，如代码所示，首先通过 RunnableThread 类实现 Runnable 接口，然后重写 run() 方法，之后只需要把这个实现了 run() 方法的实例传到 Thread 类中就可以实现多线程。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/java-concurrency-thread/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://www.codestn.com/mysql-index/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -347,10 +461,16 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2020-03-26 14:41:01 / 修改时间：14:46:15" itemprop="dateCreated datePublished" datetime="2020-03-26T14:41:01+08:00">2020-03-26</time>
+              <time title="创建时间：2020-03-26 14:41:01" itemprop="dateCreated datePublished" datetime="2020-03-26T14:41:01+08:00">2020-03-26</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-20 20:45:39" itemprop="dateModified" datetime="2020-09-20T20:45:39+08:00">2020-09-20</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
@@ -405,15 +525,14 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ShareClose</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Integer id;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String tsCode;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> JSONObject close;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>typeHandler</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.ibatis.type.BaseTypeHandler;</span><br><span class="line"><span class="keyword">import</span> org.apache.ibatis.type.JdbcType;</span><br><span class="line"><span class="keyword">import</span> org.apache.ibatis.type.MappedJdbcTypes;</span><br><span class="line"><span class="keyword">import</span> org.apache.ibatis.type.MappedTypes;</span><br><span class="line"><span class="keyword">import</span> java.sql.CallableStatement;</span><br><span class="line"><span class="keyword">import</span> java.sql.PreparedStatement;</span><br><span class="line"><span class="keyword">import</span> java.sql.ResultSet;</span><br><span class="line"><span class="keyword">import</span> java.sql.SQLException;</span><br><span class="line"><span class="keyword">import</span> com.alibaba.fastjson.JSONObject;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Description;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@MappedTypes</span>(JSONObject<span class="class">.<span class="keyword">class</span>)</span></span><br><span class="line"><span class="class">@<span class="title">MappedJdbcTypes</span>(<span class="title">JdbcType</span>.<span class="title">LONGVARCHAR</span>)</span></span><br><span class="line"><span class="class"><span class="title">public</span> <span class="title">class</span> <span class="title">JsonObjectTypeHandler</span> <span class="keyword">extends</span> <span class="title">BaseTypeHandler</span>&lt;<span class="title">JSONObject</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 设置非空参数</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> ps</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> i</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> parameter</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> jdbcType</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> SQLException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setNonNullParameter</span><span class="params">(PreparedStatement ps, <span class="keyword">int</span> i, JSONObject parameter, JdbcType jdbcType)</span> <span class="keyword">throws</span> SQLException </span>&#123;</span><br><span class="line">        ps.setString(i, String.valueOf(parameter.toJSONString()));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 根据列名，获取可以为空的结果</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> rs</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> columnName</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> SQLException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> JSONObject <span class="title">getNullableResult</span><span class="params">(ResultSet rs, String columnName)</span> <span class="keyword">throws</span> SQLException </span>&#123;</span><br><span class="line">        String sqlJson = rs.getString(columnName);</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> != sqlJson)&#123;</span><br><span class="line">            <span class="keyword">return</span> JSONObject.parseObject(sqlJson);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 根据列索引，获取可以为空的结果</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> rs</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> columnIndex</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> SQLException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> JSONObject <span class="title">getNullableResult</span><span class="params">(ResultSet rs, <span class="keyword">int</span> columnIndex)</span> <span class="keyword">throws</span> SQLException </span>&#123;</span><br><span class="line">        String sqlJson = rs.getString(columnIndex);</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> != sqlJson)&#123;</span><br><span class="line">            <span class="keyword">return</span> JSONObject.parseObject(sqlJson);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> JSONObject <span class="title">getNullableResult</span><span class="params">(CallableStatement cs, <span class="keyword">int</span> columnIndex)</span> <span class="keyword">throws</span> SQLException </span>&#123;</span><br><span class="line">        String sqlJson = cs.getString(columnIndex);</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> != sqlJson)&#123;</span><br><span class="line">            <span class="keyword">return</span> JSONObject.parseObject(sqlJson);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>mapper.xml</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">resultMap</span> <span class="attr">id</span>=<span class="string">"ResultMapWithBLOBs"</span> <span class="attr">type</span>=<span class="string">"com.ms.quanplat.bean.ShareClose"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">constructor</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">idArg</span> <span class="attr">column</span>=<span class="string">"id"</span> <span class="attr">javaType</span>=<span class="string">"java.lang.Integer"</span> <span class="attr">jdbcType</span>=<span class="string">"INTEGER"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">arg</span> <span class="attr">column</span>=<span class="string">"ts_code"</span> <span class="attr">javaType</span>=<span class="string">"java.lang.String"</span> <span class="attr">jdbcType</span>=<span class="string">"VARCHAR"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">arg</span> <span class="attr">column</span>=<span class="string">"close"</span> <span class="attr">javaType</span>=<span class="string">"com.alibaba.fastjson.JSONObject"</span> <span class="attr">jdbcType</span>=<span class="string">"LONGVARCHAR"</span> <span class="attr">typeHandler</span>=<span class="string">"com.ms.quanplat.config.handler.JsonObjectTypeHandler"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">constructor</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">resultMap</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>最后不要忘记在配置文件中配置handler的包路径</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">mybatis:</span></span><br><span class="line">  <span class="attr">type-handlers-package:</span> <span class="string">com.ms.quanplat.config.handler</span></span><br></pre></td></tr></table></figure>
-
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/mybatis-json/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1207,118 +1326,11 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://www.codestn.com/spring-boot-task/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/Impulse_Command_Block.gif">
-      <meta itemprop="name" content="codestn">
-      <meta itemprop="description" content="希望总有一天可以达到">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="codestn - 程序方块">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/spring-boot-task/" class="post-title-link" itemprop="url">spring-boot笔记--任务</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-02-19 09:43:37 / 修改时间：11:22:27" itemprop="dateCreated datePublished" datetime="2020-02-19T09:43:37+08:00">2020-02-19</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Spring-Boot/" itemprop="url" rel="index">
-                    <span itemprop="name">Spring Boot</span>
-                  </a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Spring-Boot/Async/" itemprop="url" rel="index">
-                    <span itemprop="name">Async</span>
-                  </a>
-                </span>
-            </span>
-
-          
-            <span id="/spring-boot-task/" class="post-meta-item leancloud_visitors" data-flag-title="spring-boot笔记--任务" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/spring-boot-task/#comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/spring-boot-task/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="十、Spring-Boot与任务"><a href="#十、Spring-Boot与任务" class="headerlink" title="十、Spring Boot与任务"></a>十、Spring Boot与任务</h1><h2 id="1、异步任务"><a href="#1、异步任务" class="headerlink" title="1、异步任务"></a>1、异步任务</h2><ul>
-<li><strong>同步方法</strong>调用一旦开始，调用者必须等到方法调用返回后，才能继续后续的行为。</li>
-<li><strong>异步方法</strong>调用一旦开始，方法调用就会立即返回，调用者就可以继续后续的操作。而，异步方法通常会在另外一个线程中，“真实”地执行着。整个过程，不会阻碍调用者的工作</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/spring-boot-task/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1386,20 +1398,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">30</span>
+          <span class="site-state-item-count">31</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-count">24</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-count">32</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
