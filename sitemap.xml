@@ -2,23 +2,30 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://www.codestn.com/linux-filesystem/</loc>
+    
+    <lastmod>2020-11-11T13:28:26.122Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://www.codestn.com/linux-user/</loc>
     
-    <lastmod>2020-11-08T10:31:18.728Z</lastmod>
+    <lastmod>2020-11-11T13:28:18.115Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://www.codestn.com/linux-vim/</loc>
     
-    <lastmod>2020-11-08T07:37:52.199Z</lastmod>
+    <lastmod>2020-11-11T13:28:02.720Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://www.codestn.com/linux-filesystem/</loc>
+    <loc>http://www.codestn.com/linux-command/</loc>
     
-    <lastmod>2020-11-08T06:36:30.290Z</lastmod>
+    <lastmod>2020-11-11T13:27:44.836Z</lastmod>
     
   </url>
   

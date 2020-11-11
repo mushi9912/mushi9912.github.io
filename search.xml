@@ -1,6 +1,152 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Linux总结-实用命令</title>
+    <url>/linux-command/</url>
+    <content><![CDATA[<h1 id="四、Linux实用命令"><a href="#四、Linux实用命令" class="headerlink" title="四、Linux实用命令"></a>四、Linux实用命令</h1><h2 id="4-1-Linux操作级别"><a href="#4-1-Linux操作级别" class="headerlink" title="4.1 Linux操作级别"></a>4.1 Linux操作级别</h2><p>0：关机</p>
+<p>1：单用户(在找回密码的时候特别有用)</p>
+<p>2：多用户无网络服务</p>
+<p>3：多用户有网络服务</p>
+<p>4：保留</p>
+<p>5：图形界面</p>
+<p>6：重启</p>
+<p>常用的运行级别是3和5，要修改默认的运行级别可以修改/etc/inittab的id:5:initdafault:这一行的数字</p>
+<p>CentOS7修改了位置，不再使用/etc/inittab</p>
+<p>命令：init [012345]</p>
+<h2 id="4-2-帮助指令"><a href="#4-2-帮助指令" class="headerlink" title="4.2 帮助指令"></a>4.2 帮助指令</h2><ol>
+<li>man [命令或配置文件]</li>
+<li>help [命令]</li>
+<li>baidu</li>
+</ol>
+<a id="more"></a>
+
+<h2 id="4-3-文件目录类"><a href="#4-3-文件目录类" class="headerlink" title="4.3 文件目录类"></a>4.3 文件目录类</h2><p><strong>pwd：</strong></p>
+<p>​    显示当前工作目录的绝对路径</p>
+<p><strong>ls：</strong></p>
+<p>​    显示文件或目录</p>
+<p>​    ls -a /目录：当前所有文件</p>
+<p>​    ls -l /目录：以列表的形式显示信息</p>
+<p><strong>cd：</strong></p>
+<p>​    切换到指定目录</p>
+<p>​    cd ~：回到家目录</p>
+<p>​    cd ..：回到上一级目录</p>
+<p>​    cd：回到家目录</p>
+<p><strong>mkdir：</strong></p>
+<p>​    mkdir /目录：创建目录</p>
+<p>​    mkdir -p /目录：创建多级目录</p>
+<p><strong>rmdir：</strong></p>
+<p>​    rmdir /目录：删除目录(非空)</p>
+<p>​    rm -rf /目录：删除非空的目录</p>
+<p><strong>touch：</strong></p>
+<p>​    touch a.txt b.txt：创建空文件(可一次性创建多个文件)</p>
+<p><strong>cp：</strong></p>
+<p>​    cp /目录：拷贝单个文件</p>
+<p>​    cp -r /目录：拷贝目录</p>
+<p>​    \cp -r /目录：拷贝并覆盖目录</p>
+<p><strong>rm：</strong></p>
+<p>​    rm /文件：删除文件</p>
+<p>​    rm -r /目录：递归删除所有文件</p>
+<p>​    rm -f /目录：删除而不提示</p>
+<p><strong>mv：</strong></p>
+<p>​    mv old.txt new.txt：重命名</p>
+<p>​    mv old.txt /new：移动文件或目录</p>
+<p><strong>cat：</strong></p>
+<p>​    查看文件内容</p>
+<p>​    cat 文件：查看文件</p>
+<p>​    cat -n 文件：显示行号</p>
+<p>​    cat -n 文件 | more：分页</p>
+<p><strong>more：</strong></p>
+<p>​    以全屏方式按页显示文件的内容</p>
+<p>​    快捷键：</p>
+<pre><code>1. 空格：向下翻一页
+  2. enter：向下翻一行
+    3. q：立刻离开more，不再显示该文件内容
+      4. Crtl+F：向下滚动一屏
+        5. Ctrl+B：返回上一屏
+          6. =：输出当前的行号
+            7. :f：输出文件名和当前行号</code></pre><p><strong>less：</strong></p>
+<p>​    与more类似，并不是一次将文件读取，读取大文件很有用</p>
+<p>​    快捷键：</p>
+<pre><code>1. 空格：向下翻一页
+  2. q：立刻离开more，不再显示该文件内容
+    3. 方向键下：向下翻一页
+      4. 方向键上：向上翻一页
+        5. /字符：向下搜寻字符串
+          6. ?字符：向上搜寻字符串</code></pre><p><strong>&gt;和&gt;&gt;：</strong></p>
+<p>​    输出重定向和追加</p>
+<p>​    ls -l &gt; 文件：写入文件中(覆盖写)</p>
+<p>​    ls -al &gt;&gt; 文件：追加写入文件</p>
+<p>​    cat 文件1 &gt;&gt; 文件2：文件1的内容追加到文件2</p>
+<p>​    echo “” &gt;&gt; 文件：自定义内容写入到文件</p>
+<p><strong>echo：</strong></p>
+<p>​    echo输出内容至控制台</p>
+<p>​    echo $PATH：输出环境变量</p>
+<p><strong>head：</strong></p>
+<p>​    显示文件的开头部分</p>
+<p>​    head 文件：查看文件头10行的内容</p>
+<p>​    head -n 5 文件：查看文件头5行的内容</p>
+<p><strong>tail：</strong></p>
+<p>​    显示文件的最后部分</p>
+<p>​    tail 文件：查看文件后10行的内容</p>
+<p>​    tail-n 5 文件：查看文件后5行的内容</p>
+<p>​    tail -f 文件：实时追踪文件内容</p>
+<p><strong>ln：</strong></p>
+<p>​    软链接指令，类似于快捷方式</p>
+<p>​    ln  -s 源路径或文件 软链接名</p>
+<p>​    删除软链接时最后不要带斜杠</p>
+<p>​    通过pwd查看仍是当前目录</p>
+<p><strong>history：</strong></p>
+<p>​    查看已经执行过的历史指令</p>
+<p>​    history：查询所有指令</p>
+<p>​    history 10：查询最近的10个指令</p>
+<p>​    !178：执行历史记录中第178个指令</p>
+<h2 id="4-4-时间日期类"><a href="#4-4-时间日期类" class="headerlink" title="4.4 时间日期类"></a>4.4 时间日期类</h2><p><strong>date：</strong></p>
+<p>​    date：显示当前时间</p>
+<p>​    date “+%Y-%m-%d %H:%M:%S”：格式化显示</p>
+<p>​    date -s 字符串时间：设置时间</p>
+<p><strong>cal：</strong></p>
+<p>​    cal：显示当月日历</p>
+<p>​    cal 2020：显示2020年的日历</p>
+<h2 id="4-5-搜索查询类"><a href="#4-5-搜索查询类" class="headerlink" title="4.5 搜索查询类"></a>4.5 搜索查询类</h2><p><strong>find：</strong></p>
+<p>​    find /home -name hello.txt：在/home目录下查找名为hello.txt的文件</p>
+<p>​    find /opt -user root：在/opt目录下查找用户为root的文件</p>
+<p>​    find / -size +20M：在/目录下查找文件大小大于20M的文件(+n 大于、-n 小于、n 等于)</p>
+<p><strong>locate：</strong></p>
+<p>​    快速定位文件，会先建立一个locate数据库，保持更新</p>
+<p>​    updatedb：更新数据库</p>
+<p>​    locate 文件名：查找文件</p>
+<p>​    yum install mlocate 命令可以直接安装updatedb相关</p>
+<p><strong>grep指令和管道符号|：</strong></p>
+<p>​    grep过滤查找，管道符号|，将前一个命令的结果传递给后一个命令去处理</p>
+<p>​    cat hello.txt | grep yes：将hello.txt的内容交给grep yes 处理</p>
+<p>​    cat hello.txt | grep -n yes：将hello.txt的内容交给grep yes 处理，显示行号</p>
+<p>​    cat hello.txt | grep -i yes：将hello.txt的内容交给grep yes 处理，忽略大小写</p>
+<h2 id="4-6-压缩和解压缩类"><a href="#4-6-压缩和解压缩类" class="headerlink" title="4.6 压缩和解压缩类"></a>4.6 压缩和解压缩类</h2><p><strong>gzip(压缩)/gunzip(解压缩)：</strong></p>
+<p>​    gzip 文件1 文件2：将文件压缩为.gz文件，不会保留源文件</p>
+<p>​    gunzip 文件1：解压.gz文件</p>
+<p><strong>zip(压缩)/unzip(解压缩)：</strong></p>
+<p>​    zip -r myzip.zip /home：压缩/home下的所有文件，生成myzip.zip</p>
+<p>​    unzip -d /home myzip.zip：解压myzip.zip到/home</p>
+<p><strong>tar：</strong></p>
+<p>​    打包指令，打包后是.tar.gz文件</p>
+<p>​    -c：产生.tar.gz压缩文件</p>
+<p>​    -v：压缩和解压缩时显示详细信息</p>
+<p>​    -f：指定压缩后的文件名</p>
+<p>​    -z：打包同时压缩</p>
+<p>​    -x：解压.tar.gz文件</p>
+<p>​    tar -zcvf a.tar.gz 文件1 文件2：压缩文件1和文件2为a.tar.gz</p>
+<p>​    tar -zcvf a.tar.gz /home：压缩/home为a.tar.gz</p>
+<p>​    tar -zxvf a.tar.gz：解压到当前文件夹</p>
+<p>​    tar -zxvf a.tar.gz -C /home：解压到/home，目录事先要存在，不加-C，会在当前目录也进行解压</p>
+]]></content>
+      <categories>
+        <category>Linux</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Linux总结-开机关机和用户管理</title>
     <url>/linux-user/</url>
     <content><![CDATA[<h1 id="三、Linux开机关机和用户管理"><a href="#三、Linux开机关机和用户管理" class="headerlink" title="三、Linux开机关机和用户管理"></a>三、Linux开机关机和用户管理</h1><h2 id="3-1-关机和重启命令"><a href="#3-1-关机和重启命令" class="headerlink" title="3.1 关机和重启命令"></a>3.1 关机和重启命令</h2><p><strong>shutdown：</strong></p>
@@ -14,11 +160,11 @@
 <p><strong>sync：</strong></p>
 <p>​    将内存数据保存在磁盘上，防止数据丢失</p>
 <h2 id="3-2-用户登录和注销"><a href="#3-2-用户登录和注销" class="headerlink" title="3.2 用户登录和注销"></a>3.2 用户登录和注销</h2><ol>
-<li><p>登录时尽量少用<strong>root</strong>帐号登录，因为它是系统管理员，最大的权限，避免操作失误。可以利用普通用户登录，登录后再用<strong>su - 用户名</strong>命令来切换成系统管理员身份。</p>
-</li>
-<li><p>在提示符下输入<strong>logout</strong>即可注销用户，图形界面下此命令无效。</p>
-</li>
+<li>登录时尽量少用<strong>root</strong>帐号登录，因为它是系统管理员，最大的权限，避免操作失误。可以利用普通用户登录，登录后再用<strong>su - 用户名</strong>命令来切换成系统管理员身份。</li>
+<li>在提示符下输入<strong>logout</strong>即可注销用户，图形界面下此命令无效。</li>
 </ol>
+<a id="more"></a>
+
 <h2 id="3-3-增删用户指定密码"><a href="#3-3-增删用户指定密码" class="headerlink" title="3.3 增删用户指定密码"></a>3.3 增删用户指定密码</h2><p><strong>添加用户：</strong></p>
 <p>​    useradd 用户名</p>
 <p>​    useradd -d [目录] 用户名 指定用户创建时放在哪个目录</p>
@@ -67,6 +213,8 @@
 <p>vim 具有程序编辑的能力，可以看做是 vi 的增强版本，可以主动的以字体颜色辨别语法的正确性，方便程序设计。代码补完、编译及错误跳转等方便编程的功能特别丰富，在程序员中被广泛使用。</p>
 <h2 id="2-2-vi和vim常用的三种模式"><a href="#2-2-vi和vim常用的三种模式" class="headerlink" title="2.2 vi和vim常用的三种模式"></a>2.2 vi和vim常用的三种模式</h2><h3 id="2-2-1-正常模式"><a href="#2-2-1-正常模式" class="headerlink" title="2.2.1 正常模式"></a>2.2.1 正常模式</h3><p>在正常模式下，我们可以使用快捷键。</p>
 <p>以 vim 打开一个档案就直接进入一般模式了(这是默认的模式)。在这个模式中， 你可以使用『上下左右』按键来移动光标，你可以使用『删除字符』或『删除整行』来处理档案内容， 也可以使用『复制、粘贴』来处理你的文件数据。</p>
+<a id="more"></a>
+
 <h3 id="2-2-2-插入模式-编辑模式"><a href="#2-2-2-插入模式-编辑模式" class="headerlink" title="2.2.2 插入模式/编辑模式"></a>2.2.2 插入模式/编辑模式</h3><p>在模式下，程序员可以输入内容。</p>
 <p>按下 i, I, o, O, a, A, r, R 等任何一个字母之后才会进入编辑模式, 一般来说按 i 即可</p>
 <h3 id="2-2-3-命令模式"><a href="#2-2-3-命令模式" class="headerlink" title="2.2.3 命令模式"></a>2.2.3 命令模式</h3><p>在这个模式当中， 可以提供你相关指令，完成读取、存盘、替换、离开 vim 、显示行号等的动作则是在此模式中达成的</p>

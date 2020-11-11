@@ -58,7 +58,7 @@
 <meta property="og:description" content="三、Linux开机关机和用户管理3.1 关机和重启命令shutdown： ​    shutdown -h now：表示立即关机 ​    shutdown -h 1：表示1分钟后关机 ​    shutdown -r now：立即重启 halt： ​    直接使用，关机 reboot： ​    直接使用，重启 sync： ​    将内存数据保存在磁盘上，防止数据丢失 3.2 用户登录和注销">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-11-08T07:39:01.000Z">
-<meta property="article:modified_time" content="2020-11-08T10:31:18.728Z">
+<meta property="article:modified_time" content="2020-11-11T13:28:18.115Z">
 <meta property="article:author" content="codestn">
 <meta property="article:tag" content="Linux">
 <meta name="twitter:card" content="summary">
@@ -240,10 +240,16 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2020-11-08 15:39:01 / 修改时间：18:31:18" itemprop="dateCreated datePublished" datetime="2020-11-08T15:39:01+08:00">2020-11-08</time>
+              <time title="创建时间：2020-11-08 15:39:01" itemprop="dateCreated datePublished" datetime="2020-11-08T15:39:01+08:00">2020-11-08</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-11-11 21:28:18" itemprop="dateModified" datetime="2020-11-11T21:28:18+08:00">2020-11-11</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
@@ -299,11 +305,11 @@
 <p><strong>sync：</strong></p>
 <p>​    将内存数据保存在磁盘上，防止数据丢失</p>
 <h2 id="3-2-用户登录和注销"><a href="#3-2-用户登录和注销" class="headerlink" title="3.2 用户登录和注销"></a>3.2 用户登录和注销</h2><ol>
-<li><p>登录时尽量少用<strong>root</strong>帐号登录，因为它是系统管理员，最大的权限，避免操作失误。可以利用普通用户登录，登录后再用<strong>su - 用户名</strong>命令来切换成系统管理员身份。</p>
-</li>
-<li><p>在提示符下输入<strong>logout</strong>即可注销用户，图形界面下此命令无效。</p>
-</li>
+<li>登录时尽量少用<strong>root</strong>帐号登录，因为它是系统管理员，最大的权限，避免操作失误。可以利用普通用户登录，登录后再用<strong>su - 用户名</strong>命令来切换成系统管理员身份。</li>
+<li>在提示符下输入<strong>logout</strong>即可注销用户，图形界面下此命令无效。</li>
 </ol>
+<a id="more"></a>
+
 <h2 id="3-3-增删用户指定密码"><a href="#3-3-增删用户指定密码" class="headerlink" title="3.3 增删用户指定密码"></a>3.3 增删用户指定密码</h2><p><strong>添加用户：</strong></p>
 <p>​    useradd 用户名</p>
 <p>​    useradd -d [目录] 用户名 指定用户创建时放在哪个目录</p>
@@ -358,7 +364,10 @@
     <a href="/linux-vim/" rel="prev" title="Linux总结-vi和vim编辑器">
       <i class="fa fa-chevron-left"></i> Linux总结-vi和vim编辑器
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/linux-command/" rel="next" title="Linux总结-实用命令">
+      Linux总结-实用命令 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -435,7 +444,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">34</span>
+          <span class="site-state-item-count">35</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
