@@ -244,10 +244,16 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2020-11-12 21:02:58 / 修改时间：21:17:06" itemprop="dateCreated datePublished" datetime="2020-11-12T21:02:58+08:00">2020-11-12</time>
+              <time title="创建时间：2020-11-12 21:02:58" itemprop="dateCreated datePublished" datetime="2020-11-12T21:02:58+08:00">2020-11-12</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-11-21 16:29:30" itemprop="dateModified" datetime="2020-11-21T16:29:30+08:00">2020-11-21</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
@@ -292,7 +298,28 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="五、Linux组管理与权限管理"><a href="#五、Linux组管理与权限管理" class="headerlink" title="五、Linux组管理与权限管理"></a>五、Linux组管理与权限管理</h1>
+          <h1 id="五、Linux组管理与权限管理"><a href="#五、Linux组管理与权限管理" class="headerlink" title="五、Linux组管理与权限管理"></a>五、Linux组管理与权限管理</h1><h2 id="5-1-组管理"><a href="#5-1-组管理" class="headerlink" title="5.1 组管理"></a>5.1 组管理</h2><p>Linux中每个文件都有其所有者、所在组、其它组的概念。</p>
+<p>查看文件的所有者：<strong>ls -ahl</strong>，<strong>ls -al</strong>，<strong>ll</strong>也可以查看</p>
+<p>修改文件的所有者：<strong>chown</strong> 用户名 文件名，会改变所有者，但是不会改变所在组</p>
+<p>修改文件的所在组：<strong>chgrp</strong> 组名 文件名，</p>
+<p>改变用户的所在组：<strong>usermod -g</strong> 组名 用户名</p>
+<h2 id="5-2-权限管理"><a href="#5-2-权限管理" class="headerlink" title="5.2 权限管理"></a>5.2 权限管理</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">dr-xr-xr-x. 20 root root  4096 11月 13 20:35 .</span><br><span class="line">dr-xr-xr-x. 20 root root  4096 11月 13 20:35 ..</span><br><span class="line">-rw-r--r--   1 root root     0 8月  18 2017 .autorelabel</span><br><span class="line">lrwxrwxrwx   1 root root     7 12月 24 2019 bin -&gt; usr/bin</span><br><span class="line">dr-xr-xr-x.  5 root root  4096 11月  7 19:05 boot</span><br><span class="line">drwxr-xr-x  19 root root  2960 11月 16 18:42 dev</span><br><span class="line">drwxr-xr-x   2 root root  4096 11月 12 21:46 download</span><br><span class="line">drwxr-xr-x. 87 root root 12288 11月 21 12:28 etc</span><br><span class="line">drwxr-xr-x.  5 root root  4096 11月 21 12:26 home</span><br><span class="line">lrwxrwxrwx   1 root root     7 12月 24 2019 lib -&gt; usr/lib</span><br><span class="line">lrwxrwxrwx   1 root root     9 12月 24 2019 lib64 -&gt; usr/lib64</span><br><span class="line">drwxr-xr-x   3 root root  4096 11月 13 20:35 livedata</span><br><span class="line">drwx------.  2 root root 16384 8月  18 2017 lost+found</span><br><span class="line">drwxr-xr-x.  2 root root  4096 4月  11 2018 media</span><br><span class="line">drwxr-xr-x.  2 root root  4096 4月  11 2018 mnt</span><br><span class="line">drwxr-xr-x.  2 root root  4096 4月  11 2018 opt</span><br><span class="line">dr-xr-xr-x  85 root root     0 11月 16 18:42 proc</span><br><span class="line">dr-xr-x---.  7 root root  4096 11月 21 14:13 root</span><br><span class="line">drwxr-xr-x  23 root root   680 11月 16 18:43 run</span><br><span class="line">lrwxrwxrwx   1 root root     8 12月 24 2019 sbin -&gt; usr/sbin</span><br><span class="line">drwxr-xr-x.  2 root root  4096 4月  11 2018 srv</span><br><span class="line">dr-xr-xr-x  13 root root     0 11月 21 12:31 sys</span><br><span class="line">drwxrwxrwt.  9 root root  4096 11月 21 03:40 tmp</span><br><span class="line">drwxr-xr-x. 13 root root  4096 12月 24 2019 usr</span><br><span class="line">drwxr-xr-x. 19 root root  4096 12月 24 2019 var</span><br><span class="line">-rw-r--r--   1 root root  3060 11月  8 15:27 临时文档.txt</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>第一个字符是文件类型：-表示普通文件，d表示目录，l表示软链接，c表示字符设备(键盘、鼠标)，b表示块文件(硬盘)</li>
+<li>第一组rwx表示文件所有者的权限，第二组rwx表示文件所在组的权限，第三组rwx表示文件其它组的权限</li>
+<li>权限后面的数字，当是文件时，表示硬链接的数；当是目录时，表示子目录的个数</li>
+<li>之后的是文件所有者和所在组以及文件的大小为多少字节，目录则是4096</li>
+<li>时间为文件最后的修改时间</li>
+</ol>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/linux-authority/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -460,7 +487,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-11-11 21:28:18" itemprop="dateModified" datetime="2020-11-11T21:28:18+08:00">2020-11-11</time>
+                <time title="修改时间：2020-11-21 14:03:19" itemprop="dateModified" datetime="2020-11-21T14:03:19+08:00">2020-11-21</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">

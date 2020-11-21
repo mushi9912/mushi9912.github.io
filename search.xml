@@ -3,7 +3,63 @@
   <entry>
     <title>Linux总结-组管理与权限管理</title>
     <url>/linux-authority/</url>
-    <content><![CDATA[<h1 id="五、Linux组管理与权限管理"><a href="#五、Linux组管理与权限管理" class="headerlink" title="五、Linux组管理与权限管理"></a>五、Linux组管理与权限管理</h1>]]></content>
+    <content><![CDATA[<h1 id="五、Linux组管理与权限管理"><a href="#五、Linux组管理与权限管理" class="headerlink" title="五、Linux组管理与权限管理"></a>五、Linux组管理与权限管理</h1><h2 id="5-1-组管理"><a href="#5-1-组管理" class="headerlink" title="5.1 组管理"></a>5.1 组管理</h2><p>Linux中每个文件都有其所有者、所在组、其它组的概念。</p>
+<p>查看文件的所有者：<strong>ls -ahl</strong>，<strong>ls -al</strong>，<strong>ll</strong>也可以查看</p>
+<p>修改文件的所有者：<strong>chown</strong> 用户名 文件名，会改变所有者，但是不会改变所在组</p>
+<p>修改文件的所在组：<strong>chgrp</strong> 组名 文件名，</p>
+<p>改变用户的所在组：<strong>usermod -g</strong> 组名 用户名</p>
+<h2 id="5-2-权限管理"><a href="#5-2-权限管理" class="headerlink" title="5.2 权限管理"></a>5.2 权限管理</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">dr-xr-xr-x. 20 root root  4096 11月 13 20:35 .</span><br><span class="line">dr-xr-xr-x. 20 root root  4096 11月 13 20:35 ..</span><br><span class="line">-rw-r--r--   1 root root     0 8月  18 2017 .autorelabel</span><br><span class="line">lrwxrwxrwx   1 root root     7 12月 24 2019 bin -&gt; usr/bin</span><br><span class="line">dr-xr-xr-x.  5 root root  4096 11月  7 19:05 boot</span><br><span class="line">drwxr-xr-x  19 root root  2960 11月 16 18:42 dev</span><br><span class="line">drwxr-xr-x   2 root root  4096 11月 12 21:46 download</span><br><span class="line">drwxr-xr-x. 87 root root 12288 11月 21 12:28 etc</span><br><span class="line">drwxr-xr-x.  5 root root  4096 11月 21 12:26 home</span><br><span class="line">lrwxrwxrwx   1 root root     7 12月 24 2019 lib -&gt; usr/lib</span><br><span class="line">lrwxrwxrwx   1 root root     9 12月 24 2019 lib64 -&gt; usr/lib64</span><br><span class="line">drwxr-xr-x   3 root root  4096 11月 13 20:35 livedata</span><br><span class="line">drwx------.  2 root root 16384 8月  18 2017 lost+found</span><br><span class="line">drwxr-xr-x.  2 root root  4096 4月  11 2018 media</span><br><span class="line">drwxr-xr-x.  2 root root  4096 4月  11 2018 mnt</span><br><span class="line">drwxr-xr-x.  2 root root  4096 4月  11 2018 opt</span><br><span class="line">dr-xr-xr-x  85 root root     0 11月 16 18:42 proc</span><br><span class="line">dr-xr-x---.  7 root root  4096 11月 21 14:13 root</span><br><span class="line">drwxr-xr-x  23 root root   680 11月 16 18:43 run</span><br><span class="line">lrwxrwxrwx   1 root root     8 12月 24 2019 sbin -&gt; usr/sbin</span><br><span class="line">drwxr-xr-x.  2 root root  4096 4月  11 2018 srv</span><br><span class="line">dr-xr-xr-x  13 root root     0 11月 21 12:31 sys</span><br><span class="line">drwxrwxrwt.  9 root root  4096 11月 21 03:40 tmp</span><br><span class="line">drwxr-xr-x. 13 root root  4096 12月 24 2019 usr</span><br><span class="line">drwxr-xr-x. 19 root root  4096 12月 24 2019 var</span><br><span class="line">-rw-r--r--   1 root root  3060 11月  8 15:27 临时文档.txt</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>第一个字符是文件类型：-表示普通文件，d表示目录，l表示软链接，c表示字符设备(键盘、鼠标)，b表示块文件(硬盘)</li>
+<li>第一组rwx表示文件所有者的权限，第二组rwx表示文件所在组的权限，第三组rwx表示文件其它组的权限</li>
+<li>权限后面的数字，当是文件时，表示硬链接的数；当是目录时，表示子目录的个数</li>
+<li>之后的是文件所有者和所在组以及文件的大小为多少字节，目录则是4096</li>
+<li>时间为文件最后的修改时间</li>
+</ol>
+<a id="more"></a>
+
+<p><strong>rwx权限详解：</strong></p>
+<p><strong>rwx 作用到文件</strong></p>
+<ol>
+<li><p>[r]代表可读(read): 可以读取,查看</p>
+</li>
+<li><p>[w]代表可写(write): 可以修改,但是不代表可以删除该文件,删除一个文件的前提条件是对该文件所在的目录有写权限，才能删除该文件.</p>
+</li>
+<li><p>[x]代表可执行(execute):可以被执行</p>
+</li>
+</ol>
+<p><strong>rwx 作用到目录</strong></p>
+<ol>
+<li><p>[r]代表可读(read): 可以读取，ls 查看目录内容</p>
+</li>
+<li><p>[w]代表可写(write): 可以修改,目录内创建+删除+重命名目录</p>
+</li>
+<li><p>[x]代表可执行(execute):可以进入该目录</p>
+</li>
+</ol>
+<p><strong>修改权限-chmod：</strong></p>
+<p><strong>第一种方式：+ 、-、= 变更权限</strong></p>
+<p>u:所有者  g:所有组  o:其他人  a:所有人(u、g、o 的总和)</p>
+<ol>
+<li><p>chmod u=rwx,g=rx,o=x 文件目录名</p>
+</li>
+<li><p>chmod o+w 文件目录名</p>
+</li>
+<li><p>chmod a-x 文件目录名</p>
+</li>
+</ol>
+<p><strong>第二种方式：通过数字变更权限</strong></p>
+<p>r=4 w=2 x=1，rwx=4+2+1=7</p>
+<p>chmod u=rwx,g=rx,o=x 文件目录名</p>
+<p>相当于 chmod 751文件目录名</p>
+<p><strong>修改文件的所有者和所在组-chown：</strong></p>
+<p>chown 用户名 文件名：改变文件的所有者</p>
+<p>chown 用户名:组名 文件名：改变用户的所有者和所有组</p>
+<p>-R 如果是目录 则使其下所有子文件或目录递归生效(包括自身)</p>
+<p><strong>修改文件所在组-chgrp：</strong></p>
+<p>chgrp 组名 文件名 改变文件的所在组</p>
+]]></content>
       <categories>
         <category>Linux</category>
       </categories>
@@ -179,6 +235,7 @@
 <h2 id="3-3-增删用户指定密码"><a href="#3-3-增删用户指定密码" class="headerlink" title="3.3 增删用户指定密码"></a>3.3 增删用户指定密码</h2><p><strong>添加用户：</strong></p>
 <p>​    useradd 用户名</p>
 <p>​    useradd -d [目录] 用户名 指定用户创建时放在哪个目录</p>
+<p>​    useradd -g 用户组 用户名 指定用户创建时归属于哪个组</p>
 <p><strong>指定密码：</strong></p>
 <p>​    passwd 用户名</p>
 <p><strong>删除用户：</strong></p>
