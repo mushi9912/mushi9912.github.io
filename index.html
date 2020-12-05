@@ -221,6 +221,235 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.codestn.com/linux-process/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Impulse_Command_Block.gif">
+      <meta itemprop="name" content="codestn">
+      <meta itemprop="description" content="希望总有一天可以达到">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="codestn - 程序方块">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/linux-process/" class="post-title-link" itemprop="url">Linux总结-进程管理</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-12-02 20:46:18" itemprop="dateCreated datePublished" datetime="2020-12-02T20:46:18+08:00">2020-12-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-12-05 19:13:13" itemprop="dateModified" datetime="2020-12-05T19:13:13+08:00">2020-12-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/linux-process/" class="post-meta-item leancloud_visitors" data-flag-title="Linux总结-进程管理" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/linux-process/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/linux-process/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="七、Linux进程管理"><a href="#七、Linux进程管理" class="headerlink" title="七、Linux进程管理"></a>七、Linux进程管理</h1><h2 id="7-1-进程的基本介绍"><a href="#7-1-进程的基本介绍" class="headerlink" title="7.1 进程的基本介绍"></a>7.1 进程的基本介绍</h2><ol>
+<li><p>在Linux中，每个执行的程序（代码）都称为一个进程，每一个进程都分配一个ID号。</p>
+</li>
+<li><p>每一个进程，都会对应一个父进程，而这个父进程可以复制多个子进程。例如www服务器。</p>
+</li>
+<li><p>每个进程都可能以两种方式存在的。前台与后台，所谓前台进程就是用户目前的屏幕上可以进行操作的。后台进程则是实际在操作，但由于屏幕上无法看到的进程，通常使用后台方式执行。</p>
+</li>
+<li><p>一般系统的服务都是以后台进程的方式存在，而且都会常驻在系统中。直到关机才才结束。</p>
+</li>
+</ol>
+<h2 id="7-2-ps命令"><a href="#7-2-ps命令" class="headerlink" title="7.2 ps命令"></a>7.2 ps命令</h2><p><strong>ps：</strong></p>
+<p>​    ps命令用来查看当前运行了那些进程，可以不带任何参数</p>
+<p>​    ps -a：显示当前终端的所有进程信息</p>
+<p>​    ps -u：已用户的格式显示信息</p>
+<p>​    ps -x：显示后台进程运行的参数</p>
+<p>​    ps -e：显示所有进程</p>
+<p>​    ps -f：全格式显示</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/linux-process/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.codestn.com/linux-task/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Impulse_Command_Block.gif">
+      <meta itemprop="name" content="codestn">
+      <meta itemprop="description" content="希望总有一天可以达到">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="codestn - 程序方块">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/linux-task/" class="post-title-link" itemprop="url">Linux总结-任务调度</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-11-23 22:04:46 / 修改时间：22:36:58" itemprop="dateCreated datePublished" datetime="2020-11-23T22:04:46+08:00">2020-11-23</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/linux-task/" class="post-meta-item leancloud_visitors" data-flag-title="Linux总结-任务调度" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/linux-task/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/linux-task/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="六、Linux任务调度"><a href="#六、Linux任务调度" class="headerlink" title="六、Linux任务调度"></a>六、Linux任务调度</h1><h2 id="6-1-crond任务调度"><a href="#6-1-crond任务调度" class="headerlink" title="6.1 crond任务调度"></a>6.1 crond任务调度</h2><p><strong>crontab 选项</strong></p>
+<ol>
+<li>-e：编辑crontab定时任务</li>
+<li>-l：查询crontab定时任务</li>
+<li>-r：删除当前用户所有的crontab定时任务</li>
+</ol>
+<img src="/linux-task/1.jpg" class="" title="选项参数说明">
+
+<img src="/linux-task/2.jpg" class="" title="特殊符号和案例">
+
+<h2 id="6-2-应用实例"><a href="#6-2-应用实例" class="headerlink" title="6.2 应用实例"></a>6.2 应用实例</h2><p>编写sh文件，例如/test.sh，内容为ls -l / &gt;&gt; /test，然后给一个可执行权限chmod 744 /home/test.sh，接着输入crontab -e命令，写入*/1 * * * *  /test.sh，保存成功</p>
+<ol>
+<li><p>conrtab –r：终止任务调度。</p>
+</li>
+<li><p>crontab –l：列出当前有那些任务调度</p>
+</li>
+<li><p>service crond restart   [重启任务调度]</p>
+</li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://www.codestn.com/linux-authority/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1116,233 +1345,6 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://www.codestn.com/javafillgaps/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/Impulse_Command_Block.gif">
-      <meta itemprop="name" content="codestn">
-      <meta itemprop="description" content="希望总有一天可以达到">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="codestn - 程序方块">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/javafillgaps/" class="post-title-link" itemprop="url">Java查漏补缺(一)</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-03-10 13:52:27" itemprop="dateCreated datePublished" datetime="2020-03-10T13:52:27+08:00">2020-03-10</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-22 11:10:35" itemprop="dateModified" datetime="2020-04-22T11:10:35+08:00">2020-04-22</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java/" itemprop="url" rel="index">
-                    <span itemprop="name">Java</span>
-                  </a>
-                </span>
-            </span>
-
-          
-            <span id="/javafillgaps/" class="post-meta-item leancloud_visitors" data-flag-title="Java查漏补缺(一)" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/javafillgaps/#comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/javafillgaps/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="Java查漏补缺"><a href="#Java查漏补缺" class="headerlink" title="Java查漏补缺"></a>Java查漏补缺</h1><h2 id="一、基础模块"><a href="#一、基础模块" class="headerlink" title="一、基础模块"></a>一、基础模块</h2><h4 id="1-JDK-和-JRE-有什么区别？"><a href="#1-JDK-和-JRE-有什么区别？" class="headerlink" title="1.JDK 和 JRE 有什么区别？"></a>1.JDK 和 JRE 有什么区别？</h4><ul>
-<li>JDK：Java Development Kit 的简称，java 开发工具包，提供了 java 的开发环境和运行环境。</li>
-<li>JRE：Java Runtime Environment 的简称，java 运行环境，为 java 的运行提供了所需环境。</li>
-</ul>
-<p>具体来说 JDK 其实包含了 JRE，同时还包含了编译 java 源码的编译器 javac，还包含了很多 java  程序调试和分析的工具。简单来说：如果你需要运行 java 程序，只需安装 JRE 就可以了，如果你需要编写 java 程序，需要安装 JDK。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/javafillgaps/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://www.codestn.com/vue-axios/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/Impulse_Command_Block.gif">
-      <meta itemprop="name" content="codestn">
-      <meta itemprop="description" content="希望总有一天可以达到">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="codestn - 程序方块">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/vue-axios/" class="post-title-link" itemprop="url">Vue笔记--axios</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-02-28 23:42:24" itemprop="dateCreated datePublished" datetime="2020-02-28T23:42:24+08:00">2020-02-28</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-02-29 19:23:42" itemprop="dateModified" datetime="2020-02-29T19:23:42+08:00">2020-02-29</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Vue/" itemprop="url" rel="index">
-                    <span itemprop="name">Vue</span>
-                  </a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Vue/Vuejs/" itemprop="url" rel="index">
-                    <span itemprop="name">Vuejs</span>
-                  </a>
-                </span>
-            </span>
-
-          
-            <span id="/vue-axios/" class="post-meta-item leancloud_visitors" data-flag-title="Vue笔记--axios" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/vue-axios/#comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/vue-axios/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="十二、Vue与axios"><a href="#十二、Vue与axios" class="headerlink" title="十二、Vue与axios"></a>十二、Vue与axios</h1><h2 id="1、axios的简单使用"><a href="#1、axios的简单使用" class="headerlink" title="1、axios的简单使用"></a>1、axios的简单使用</h2><ul>
-<li><p>支持多种请求方式</p>
-<ul>
-<li><p>axios(config)</p>
-</li>
-<li><p>axios.request(config)</p>
-</li>
-<li><p>axios.get(url[, config])</p>
-</li>
-<li><p>axios.delete(url[, config])</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/vue-axios/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1415,7 +1417,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-count">38</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
