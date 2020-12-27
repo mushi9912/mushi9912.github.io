@@ -2,9 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://www.codestn.com/linux-shell/</loc>
+    
+    <lastmod>2020-12-27T09:18:50.599Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://www.codestn.com/linux-process/</loc>
     
-    <lastmod>2020-12-05T11:13:13.287Z</lastmod>
+    <lastmod>2020-12-12T09:08:49.134Z</lastmod>
     
   </url>
   

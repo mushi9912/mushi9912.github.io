@@ -1,6 +1,141 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Linux总结-shell编程</title>
+    <url>/linux-shell/</url>
+    <content><![CDATA[<h1 id="八、Linux-Shell编程"><a href="#八、Linux-Shell编程" class="headerlink" title="八、Linux-Shell编程"></a>八、Linux-Shell编程</h1><h2 id="8-1-快速入门"><a href="#8-1-快速入门" class="headerlink" title="8.1 快速入门"></a>8.1 快速入门</h2><p>脚本格式的要求：</p>
+<ol>
+<li>脚本要以：#!/bin/bash开头</li>
+<li>脚本要有可执行权限，没有权限也可以使用sh test.sh来运行，但是不推荐</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line">echo "Hello World"</span><br></pre></td></tr></table></figure>
+
+<h2 id="8-2-shell变量"><a href="#8-2-shell变量" class="headerlink" title="8.2 shell变量"></a>8.2 shell变量</h2><p>Linux的shell变量分为两种，一种是系统变量，一种是用户自定义变量</p>
+<p>显示当前shell中的所有变量：<strong>set</strong></p>
+<a id="more"></a>
+
+<h3 id="8-2-1-定义变量"><a href="#8-2-1-定义变量" class="headerlink" title="8.2.1 定义变量"></a>8.2.1 定义变量</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">A=100</span><br><span class="line">echo $A</span><br><span class="line">echo "A=$A" # A=100</span><br><span class="line">unset A # 撤销变量</span><br><span class="line">echo "A=$A" # A=</span><br><span class="line"></span><br><span class="line">readonly A=99 # 静态变量，不能unset</span><br></pre></td></tr></table></figure>
+
+<h3 id="8-2-2-定义变量的规则"><a href="#8-2-2-定义变量的规则" class="headerlink" title="8.2.2 定义变量的规则"></a>8.2.2 定义变量的规则</h3><ul>
+<li><p>变量名称可以由字母、数字、下划线组成，不能以数字开头</p>
+</li>
+<li><p>等号两侧不能有空格</p>
+</li>
+<li><p>变量名称一般习惯为大写</p>
+</li>
+</ul>
+<p><strong>将命令返回值赋给变量</strong></p>
+<ul>
+<li><code>A=`ls -l`</code></li>
+<li><code>A=$(ls -l)</code>，等价于反引号</li>
+</ul>
+<h3 id="8-2-3-环境变量"><a href="#8-2-3-环境变量" class="headerlink" title="8.2.3 环境变量"></a>8.2.3 环境变量</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">export HOME=/root # 将变量设置为环境变量</span><br><span class="line">source 文件名 # 设置立即生效</span><br><span class="line">echo $环境变量 # 输出环境变量</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">多行注释</span></span><br><span class="line">:&lt;&lt;!</span><br><span class="line">XXXXX</span><br><span class="line">!</span><br></pre></td></tr></table></figure>
+
+<h3 id="8-2-4-位置参数变量"><a href="#8-2-4-位置参数变量" class="headerlink" title="8.2.4 位置参数变量"></a>8.2.4 位置参数变量</h3><ul>
+<li><p>$n （功能描述：n为数字，$0代表命令本身，$1-$9代表第一到第九个参数，十以上的参数，十以上的参数需要用大括号包含，如${10}）</p>
+</li>
+<li><p>$* （功能描述：这个变量代表命令行中所有的参数，$*把所有的参数看成一个整体）</p>
+</li>
+<li><p>$@（功能描述：这个变量也代表命令行中所有的参数，不过$@把每个参数区分对待）</p>
+</li>
+<li><p>$#（功能描述：这个变量代表命令行中所有参数的个数）</p>
+</li>
+</ul>
+<p>对于$*, $@，要注意：</p>
+<ol>
+<li>不加双引号时，两者均表示列表</li>
+<li>加双引号时，”$*”表示一个字符串；”$@”表示列表</li>
+</ol>
+<h3 id="8-2-5-预定义变量"><a href="#8-2-5-预定义变量" class="headerlink" title="8.2.5 预定义变量"></a>8.2.5 预定义变量</h3><p>预定义变量就是shell设计者事先已经定义好的变量，可以直接在shell脚本中使用</p>
+<ul>
+<li><p>$$ （功能描述：当前进程的进程号（PID））</p>
+</li>
+<li><p>$! （功能描述：后台运行的最后一个进程的进程号（PID）），后台执行命令为<code>./myshell.sh &amp;</code></p>
+</li>
+<li><p>$? （功能描述：最后一次执行的命令的返回状态。如果这个变量的值为 0，证明上一个命令正确执行；如果这个变量的值为非 0（具体是哪个数，由命令自己来决定），则证明上一个命令执行不正确）</p>
+</li>
+</ul>
+<h2 id="8-3-shell运算符"><a href="#8-3-shell运算符" class="headerlink" title="8.3 shell运算符"></a>8.3 shell运算符</h2><ul>
+<li><p>“$((运算式))”或“$[运算式]”</p>
+</li>
+<li><p>expr m + n，注意 expr 运算符间要有空格，以及赋给变量要用反引号包起来</p>
+</li>
+<li><p>expr m - n</p>
+</li>
+<li><p>expr  \*, /, %    乘，除，取余</p>
+</li>
+</ul>
+<h2 id="8-4-条件判断"><a href="#8-4-条件判断" class="headerlink" title="8.4 条件判断"></a>8.4 条件判断</h2><p>[ condition ]，注意中括号两端有空格</p>
+<p><strong>常用判断条件</strong></p>
+<ul>
+<li><p>两个数比较</p>
+<p>= 字符串比较</p>
+<p>-lt 小于</p>
+<p>-le 小于等于</p>
+<p>-eq 等于</p>
+<p>-gt 大于</p>
+<p>-ge 大于等于</p>
+<p>-ne 不等于</p>
+</li>
+<li><p>按照文件权限进行判断</p>
+<p>-r 有读的权限 [ -r 文件 ]</p>
+<p>-w 有写的权限</p>
+<p>-x 有执行的权限</p>
+</li>
+<li><p>按照文件类型进行判断</p>
+<p>-f 文件存在并且是一个常规的文件</p>
+<p>-e 文件存在</p>
+<p>-d 文件存在并是一个目录</p>
+</li>
+<li><p>布尔运算</p>
+<p>!  非运算，表达式为 true 则返回 false，否则返回 true。</p>
+<p>-o 或运算，有一个表达式为 true 则返回 true。</p>
+<p>-a 与运算，两个表达式都为 true 才返回 true。</p>
+</li>
+<li><p>逻辑运算符</p>
+<p>&amp;&amp; 逻辑的 AND [[ $a -lt 100 &amp;&amp; $b -gt 100 ]] 返回 false</p>
+<p>|| 逻辑的 OR [[ $a -lt 100 || $b -gt 100 ]] 返回 true</p>
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">if [ "ok" = "ok" ]</span><br><span class="line">then</span><br><span class="line">	echo "equal"</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">if [ 23 -gt 22 ]</span><br><span class="line">then</span><br><span class="line">	echo "gt"</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">if [ -e /临时文档.txt ]</span><br><span class="line">then</span><br><span class="line">	echo "文件存在"</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+
+<h2 id="8-5-流程控制"><a href="#8-5-流程控制" class="headerlink" title="8.5 流程控制"></a>8.5 流程控制</h2><h3 id="8-5-1-if语句"><a href="#8-5-1-if语句" class="headerlink" title="8.5.1 if语句"></a>8.5.1 if语句</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">if [ 条件判断式 ];then</span><br><span class="line">	程序</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">if [ 条件判断式 ]</span><br><span class="line">then</span><br><span class="line">	程序</span><br><span class="line">elif [条件判断式] </span><br><span class="line">then</span><br><span class="line">	程序</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">if [ $1 -ge 60 ]</span><br><span class="line">then</span><br><span class="line">	echo "及格了"</span><br><span class="line">elif [ $1 -lt 60 ]</span><br><span class="line">then</span><br><span class="line">	echo "不及格"</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+
+<h3 id="8-5-2-case语句"><a href="#8-5-2-case语句" class="headerlink" title="8.5.2 case语句"></a>8.5.2 case语句</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">case $1 in </span><br><span class="line">"1")</span><br><span class="line">	echo "周一"</span><br><span class="line">;;</span><br><span class="line">"2")</span><br><span class="line">	echo "周二"</span><br><span class="line">;;</span><br><span class="line">*)</span><br><span class="line">	echo "其它"</span><br><span class="line">esac</span><br></pre></td></tr></table></figure>
+
+<h3 id="8-5-3-for语句"><a href="#8-5-3-for语句" class="headerlink" title="8.5.3 for语句"></a>8.5.3 for语句</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">for i in "$*" # 注意加引号，不加为列表,</span><br><span class="line">do</span><br><span class="line">	echo "$i"</span><br><span class="line">done</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 对于字符串的变量，一般最好是加上双引号；对于数值型的变量，可不加双引号</span></span><br><span class="line"></span><br><span class="line">SUM=0</span><br><span class="line">for((i=1;i&lt;=100;i++))</span><br><span class="line">do</span><br><span class="line">	SUM=$[$SUM+$i]</span><br><span class="line">done</span><br><span class="line">echo "SUM=$SUM"</span><br></pre></td></tr></table></figure>
+
+<h3 id="8-5-4-while语句"><a href="#8-5-4-while语句" class="headerlink" title="8.5.4 while语句"></a>8.5.4 while语句</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">SUM=0</span><br><span class="line">FLAG=0</span><br><span class="line">while [ $FLAG -le $1 ]</span><br><span class="line">do</span><br><span class="line">	SUM=$[$SUM+$FLAG]</span><br><span class="line">	FLAG=$[$FLAG+1]</span><br><span class="line">done</span><br><span class="line">echo "SUM=$SUM"</span><br></pre></td></tr></table></figure>
+
+<h2 id="8-6-读取控制台输入"><a href="#8-6-读取控制台输入" class="headerlink" title="8.6 读取控制台输入"></a>8.6 读取控制台输入</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> -p 提示词</span></span><br><span class="line">read -p "请输入一个值：" NUM</span><br><span class="line">echo "你输入的值是：$NUM"</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> -t 10秒内输入</span></span><br><span class="line">read -t 10 -p "请输入一个值：" NUM1</span><br><span class="line">echo "你输入的值是：$NUM1"</span><br></pre></td></tr></table></figure>
+
+<h2 id="8-7-shell函数"><a href="#8-7-shell函数" class="headerlink" title="8.7 shell函数"></a>8.7 shell函数</h2><p>函数分为系统函数和自定义函数</p>
+<p>系统函数<strong>basename</strong></p>
+<p>返回完整路径最后/的部分，常用于获取文件名</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">basename /root/test.txt</span><br><span class="line"><span class="meta">#</span><span class="bash"> test.txt</span></span><br><span class="line">basename /root/test.txt .txt</span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">test</span></span></span><br></pre></td></tr></table></figure>
+
+<p>系统函数<strong>dirname</strong></p>
+<p>返回完整路径最后/的前面的部分，常用于返回路径部分</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">dirname /root/test.txt</span><br><span class="line"><span class="meta">#</span><span class="bash"> /root</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>自定义函数</strong></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[ function ] funname [()]</span><br><span class="line">&#123;</span><br><span class="line">    action;</span><br><span class="line">    [return int;]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>可以带function fun()  定义，也可以直接fun() 定义,不带任何参数。</li>
+<li>参数返回，可以显示加：return 返回，如果不加，将以最后一条命令运行结果，作为返回值。 return后跟数值n(0-255)，函数返回值在调用该函数后通过 $? 来获得。</li>
+<li>在Shell中，调用函数时可以向其传递参数。在函数体内部，通过 $n 的形式来获取参数的值，例如，$1表示第一个参数，$2表示第二个参数…</li>
+<li>注意，$10 不能获取第十个参数，获取第十个参数需要${10}。当n&gt;=10时，需要使用${n}来获取参数。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Linux</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Linux总结-进程管理</title>
     <url>/linux-process/</url>
     <content><![CDATA[<h1 id="七、Linux进程管理"><a href="#七、Linux进程管理" class="headerlink" title="七、Linux进程管理"></a>七、Linux进程管理</h1><h2 id="7-1-进程的基本介绍"><a href="#7-1-进程的基本介绍" class="headerlink" title="7.1 进程的基本介绍"></a>7.1 进程的基本介绍</h2><ol>
@@ -79,7 +214,28 @@
 <p>​    以树状的形式展示进程</p>
 <p>​    -p：显示进程的 PID</p>
 <p>​    -u：显示进程的所属用户</p>
-<h2 id="7-4-服务管理"><a href="#7-4-服务管理" class="headerlink" title="7.4 服务管理"></a>7.4 服务管理</h2>]]></content>
+<h2 id="7-4-服务管理"><a href="#7-4-服务管理" class="headerlink" title="7.4 服务管理"></a>7.4 服务管理</h2><p><strong>防火墙：</strong></p>
+<p>​    systemctl enable iptables<br>​    //其他设置<br>​    systemctl stop iptables<br>​    systemctl start iptables<br>​    systemctl restart iptables<br>​    systemctl reload iptables</p>
+<p><strong>查看所有服务的状态：</strong></p>
+<p>​    systemctl list-unit-files</p>
+<p>​    systemctl list-dependencies [target]</p>
+<h2 id="7-5-监控服务"><a href="#7-5-监控服务" class="headerlink" title="7.5 监控服务"></a>7.5 监控服务</h2><p><strong>动态监控进程：</strong></p>
+<p>​    top命令和ps相似，但是可以在一定时间后更新进程</p>
+<p>​    top -d 秒数：默认为3秒</p>
+<p>​    top -i：使top不显示任何僵死或闲置进程</p>
+<p>​    top -p：通过指定监控进程id，来监控某个进程的状态</p>
+<p>​    <strong>交互操作：</strong></p>
+<p>​        p：以CPU使用率排序，默认</p>
+<p>​        m：以内存的使用率排序</p>
+<p>​        n：以pid排序</p>
+<p>​        u：监视属于特定用户的进程</p>
+<p>​        k：输入id，终止某个进程</p>
+<p>​        q：退出</p>
+<p><strong>监控网络状态：</strong></p>
+<p>​    netstat -anp：查看所有的网络服务，没有-p的信息，请登录root</p>
+<p>​    netstat -an：按照一定顺序输出</p>
+<p>​    netstat -p：显示哪个进程在调用</p>
+]]></content>
       <categories>
         <category>Linux</category>
       </categories>
